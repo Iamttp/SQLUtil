@@ -29,11 +29,11 @@ class ToolbarButton extends JButton {
 class tableBar extends JToolBar {
     private Object[][] obj = {{" "}, {" "}};
     private String[] columnNames = {"col1", "col2", "col3", "col4"};
-    int heigth = 200;
+    private int heigth = 200;
+    public JTable table = new JTable();
 
-    public tableBar() {
+    tableBar() {
         // ----------------------------------------------table设置
-        JTable table = new JTable();
         table.setModel(new DefaultTableModel(obj, columnNames));
         table.setRowHeight(heigth / 2);
         table.setFont(new Font("宋体", Font.BOLD, 30));
@@ -94,14 +94,14 @@ class textAreaRes extends JToolBar {
     }
 }
 
-public class NewForm extends JFrame {
+class NewForm extends JFrame {
 
-    int nowTableNum = 2;
-    ArrayList<JToolBar> jToolBarTable = new ArrayList<JToolBar>() {{
+    private int nowTableNum = 2;
+    private ArrayList<tableBar> jToolBarTable = new ArrayList<tableBar>() {{
     }};
-    textAreaRes jToolBarRes = new textAreaRes();
+    private textAreaRes jToolBarRes = new textAreaRes();
 
-    void setTable() {
+    private void setTable() {
         JSplitPane jSplitPaneRes, jSplitPaneTemp = null;
         for (int i = 0; i < nowTableNum; i++) {
             jToolBarTable.add(new tableBar());
@@ -124,7 +124,7 @@ public class NewForm extends JFrame {
         setTable();
 
         jToolBarRes.butRes.addActionListener(e -> {
-
+            jToolBarRes.textArea.setText(MyUtil.getRes((DefaultTableModel) jToolBarTable.get(0).table.getModel()));
         });
         setVisible(true);
     }
