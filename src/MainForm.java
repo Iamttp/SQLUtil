@@ -13,10 +13,10 @@ public class MainForm {
     private JButton button3;
     private JTextArea textArea1;
 
+    Object[][] obj = {{" "}, {" "}};
+    String[] columnNames = {"col1", "col2", "col3", "col4"};
 
     public MainForm() {
-        Object[][] obj = {{" "}, {" "}};
-        String[] columnNames = {"col1", "col2", "col3", "col4"};
         table1.setModel(new DefaultTableModel(obj, columnNames));
         // ------------------------------------------大小设置
         int heigth = 200;
@@ -39,26 +39,34 @@ public class MainForm {
         button1.addActionListener(e -> {
             table1.removeColumn(table1.getColumnModel().getColumn(0));// columnIndex是要删除的列序号
         });
+
+        // TODO 重复内容
         button2.addActionListener(e -> {
             table1.addColumn(new TableColumn());
-            TableColumn firsetColumn = table1.getColumnModel().getColumn(table1.getColumnCount() - 1);
-            firsetColumn.setPreferredWidth(100);
-            firsetColumn.setMaxWidth(100);
-            firsetColumn.setMinWidth(100);
+
+            String[] columnNamesTemp = new String[columnNames.length + 1];
+            System.arraycopy(columnNames, 0, columnNamesTemp, 0, columnNames.length);
+            columnNames = columnNamesTemp;
+            columnNames[columnNames.length - 1] = "col" + (columnNames.length + 1);
+            table1.setModel(new DefaultTableModel(obj, columnNames));
+
+            for (int i = 0; i < columnNames.length; i++) {
+                TableColumn firsetColumn = table1.getColumnModel().getColumn(i);
+                firsetColumn.setPreferredWidth(100);
+                firsetColumn.setMaxWidth(100);
+                firsetColumn.setMinWidth(100);
+            }
         });
 
         button3.addActionListener(e -> {
-            DefaultTableModel tableModel = (DefaultTableModel) table1.getModel();
-            String cellValue = (String) tableModel.getValueAt(0, 0);
-            textArea1.setText(cellValue);
+            textArea1.setText(MyUtil.getRes((DefaultTableModel) table1.getModel()));
         });
-
     }
 
 
     public static void main(String[] args) {
         JFrame frame = new JFrame("Query By Example");
-        frame.setSize(900, 600);
+        frame.setSize(1100, 600);
         frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
         frame.setContentPane(new MainForm().myJPanel);
         frame.setVisible(true);
