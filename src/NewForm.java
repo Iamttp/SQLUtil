@@ -3,6 +3,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 /**
  * 自定义按钮
@@ -11,6 +12,12 @@ class ToolbarButton extends JButton {
     ToolbarButton(String text, int width, int heigth, ActionListener l) {
         this.setText(text);
         addActionListener(l);
+        this.setFont(new Font("宋体", Font.BOLD, 30));
+        setPreferredSize(new Dimension(width, heigth)); // 按钮大小设置
+    }
+
+    ToolbarButton(String text, int width, int heigth) {
+        this.setText(text);
         this.setFont(new Font("宋体", Font.BOLD, 30));
         setPreferredSize(new Dimension(width, heigth)); // 按钮大小设置
     }
@@ -66,28 +73,19 @@ class tableBar extends JToolBar {
 }
 
 /**
- * 自定义显示框，加个按钮
+ * 自定义显示框，加个三个按钮
  */
 class textAreaRes extends JToolBar {
     JTextArea textArea = new JTextArea();
     JToolBar sonToolBar = new JToolBar();
+    public ToolbarButton butRes;
 
     public textAreaRes() {
-        ToolbarButton butRes = new ToolbarButton("结果", 100, 100, e -> {
-            //TODO
-        });
-        ToolbarButton butAdd = new ToolbarButton("添加表格", 200, 100, e -> {
-            //TODO
-        });
-        ToolbarButton butRemove = new ToolbarButton("删除表格", 200, 100, e -> {
-            //TODO
-        });
+        butRes = new ToolbarButton("结果", 100, 100);
         textArea.setFont(new Font("宋体", Font.BOLD, 30));
         this.add(textArea);
 
         sonToolBar.add(butRes);
-        sonToolBar.add(butAdd);
-        sonToolBar.add(butRemove);
         sonToolBar.setFloatable(false);
         sonToolBar.setOrientation(VERTICAL);
         this.add(sonToolBar);
@@ -96,25 +94,38 @@ class textAreaRes extends JToolBar {
     }
 }
 
-public class newForm extends JFrame {
+public class NewForm extends JFrame {
+
+    int nowTableNum = 2;
+    ArrayList<JToolBar> jToolBarTable = new ArrayList<JToolBar>() {{
+    }};
+    textAreaRes jToolBarRes = new textAreaRes();
+
+    void setTable() {
+        JSplitPane jSplitPaneRes, jSplitPaneTemp = null;
+        for (int i = 0; i < nowTableNum; i++) {
+            jToolBarTable.add(new tableBar());
+        }
+        for (int i = 0; i < nowTableNum; i++) {
+            jSplitPaneTemp = new JSplitPane(JSplitPane.VERTICAL_SPLIT, jSplitPaneTemp, jToolBarTable.get(i));
+        }
+        jSplitPaneRes = new JSplitPane(JSplitPane.VERTICAL_SPLIT, jSplitPaneTemp, jToolBarRes);
+        Container cp = getContentPane();
+        cp.add(jSplitPaneRes, BorderLayout.CENTER);
+        setSize(1100, 400 + nowTableNum * 200);
+    }
 
     // 窗口的初始化
-    public newForm() {
+    public NewForm(int num) {
         // ---------------------------------------------主窗口设置
         setTitle("Query By Example");
-        setSize(1100, 600);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
+        nowTableNum = num;
+        setTable();
 
-        JSplitPane jSplitPane1 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, new tableBar(), new tableBar());
-        JSplitPane jSplitPane2 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, jSplitPane1, new textAreaRes());
-        Container cp = getContentPane();
-        cp.add(jSplitPane2, BorderLayout.CENTER);
+        jToolBarRes.butRes.addActionListener(e -> {
+
+        });
         setVisible(true);
-    }
-}
-
-class Main {
-    public static void main(String[] args) {
-        new newForm();
     }
 }
