@@ -4,4 +4,6 @@
 
 基本功能0.2(如下图):
 
-![avatar](src/1.png)
+![avatar](src/1.PNG)
+
+功能1.0（TODO 加入第二张表，笛卡尔积）
