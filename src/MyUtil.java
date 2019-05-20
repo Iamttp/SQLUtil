@@ -2,47 +2,23 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.util.ArrayList;
 import java.util.List;
-//import javax.swing.table.JTableHeader;
-//import javax.swing.table.TableColumn;
-//import java.util.Enumeration;
 
 public class MyUtil {
     public static void Message(String cellValue) {
         JOptionPane.showMessageDialog(null, cellValue, "", JOptionPane.PLAIN_MESSAGE);
     }
 
-//    public static void FitTableColumns(JTable myTable) {
-//        JTableHeader header = myTable.getTableHeader();
-//        int rowCount = myTable.getRowCount();
-//
-//        Enumeration columns = myTable.getColumnModel().getColumns();
-//        while (columns.hasMoreElements()) {
-//            TableColumn column = (TableColumn) columns.nextElement();
-//            int col = header.getColumnModel().getColumnIndex(column.getIdentifier());
-//            int width = (int) myTable.getTableHeader().getDefaultRenderer()
-//                    .getTableCellRendererComponent(myTable, column.getIdentifier()
-//                            , false, false, -1, col).getPreferredSize().getWidth();
-//            for (int row = 0; row < rowCount; row++) {
-//                int preferedWidth = (int) myTable.getCellRenderer(row, col).getTableCellRendererComponent(myTable,
-//                        myTable.getValueAt(row, col), false, false, row, col).getPreferredSize().getWidth();
-//                width = Math.max(width, preferedWidth);
-//            }
-//            header.setResizingColumn(column); // 此行很重要
-//            column.setWidth(width + myTable.getIntercellSpacing().width);
-//        }
-//    }
-
-    static String SELECT = "SELECT ";
-    static String FROM = "FROM";
-    static String WHERE = "WHERE ";
-    static String PrintStr = "P.";
-    static List<String> operatorStr = new ArrayList<String>() {{
+    private static final String SELECT = "SELECT ";
+    private static final String FROM = "FROM";
+    private static final String WHERE = "WHERE ";
+    private static final String PrintStr = "P.";
+    private static final List<String> operatorStr = new ArrayList<String>() {{
         add(">");
         add("<");
         add("=");
     }};
 
-    public static String getRes(DefaultTableModel tableModel) {
+    static String getRes(DefaultTableModel tableModel) {
         StringBuilder res = new StringBuilder();
         // 即SELECT后面的元素
         ArrayList<String> printItem = new ArrayList<>();
@@ -60,13 +36,13 @@ public class MyUtil {
                 // > <
                 if (operatorStr.contains(cellValue.substring(0, 1))) {
                     equelItem.add((String) tableModel.getValueAt(0, i)
-                            + (String) tableModel.getValueAt(1, i));
+                            + tableModel.getValueAt(1, i));
                     continue;
                 }
 
                 // =
-                equelItem.add((String) tableModel.getValueAt(0, i) + "="
-                        + (String) tableModel.getValueAt(1, i));
+                equelItem.add(tableModel.getValueAt(0, i) + "="
+                        + tableModel.getValueAt(1, i));
             }
         }
 
