@@ -70,4 +70,10 @@ public class MyUtil {
         }
         return res.toString();
     }
+
+    static String getResForMul(ArrayList<String[]> arrayLists) {
+        String res = "";
+        // TODO
+        return res;
+    }
 }

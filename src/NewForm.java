@@ -116,7 +116,7 @@ class NewForm extends JFrame {
     }
 
     // 窗口的初始化
-    public NewForm(int num) {
+    NewForm(int num) {
         // ---------------------------------------------主窗口设置
         setTitle("Query By Example");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -124,7 +124,25 @@ class NewForm extends JFrame {
         setTable();
 
         jToolBarRes.butRes.addActionListener(e -> {
-            jToolBarRes.textArea.setText(MyUtil.getRes((DefaultTableModel) jToolBarTable.get(0).table.getModel()));
+            if (nowTableNum == 1)
+                jToolBarRes.textArea.setText(MyUtil.getRes((DefaultTableModel) jToolBarTable.get(0).table.getModel()));
+            else {
+                ArrayList<String[]> arrayList = new ArrayList<>();
+                for (int i = 0; i < nowTableNum; i++) {
+                    JTable jTable = jToolBarTable.get(i).table;
+                    String[] tempStr = new String[jTable.getColumnCount()];
+                    for (int j = 0; j < jTable.getColumnCount(); j++) {
+                        tempStr[j] = ((String) jTable.getValueAt(0, j));
+                    }
+                    arrayList.add(tempStr);
+                    String[] tempStr2 = new String[jTable.getColumnCount()];
+                    for (int j = 0; j < jTable.getColumnCount(); j++) {
+                        tempStr2[j] = ((String) jTable.getValueAt(1, j));
+                    }
+                    arrayList.add(tempStr2);
+                }
+                jToolBarRes.textArea.setText(MyUtil.getResForMul(arrayList));
+            }
         });
         setVisible(true);
     }
