@@ -47,7 +47,7 @@ public class MyUtil {
                 if (i != equelItem.size() - 1)
                     res.append(equelItem.get(i)).append(" AND ");
                 else
-                    res.append(equelItem.get(i)).append("\n");
+                    res.append(equelItem.get(i));
             }
         }
         return res;
@@ -108,16 +108,34 @@ public class MyUtil {
         // FROM后面的字符串
         ArrayList<String> formItem = new ArrayList<>();
 
+        // 匹配的_X
+        ArrayList<String> Xp = new ArrayList<>();
+        // 匹配的_Y
+        ArrayList<String> Yp = new ArrayList<>();
+        // 匹配的_Z
+        ArrayList<String> Zp = new ArrayList<>();
+
         for (int i = 1; i < arrayLists.size(); i += 2) {
             // 取单行（值）
             String[] nowStr = arrayLists.get(i);
-            for (int j = 0; j < nowStr.length; j++) {
+            // 表名
+            formItem.add(arrayLists.get(i - 1)[0]);
+
+            for (int j = 1; j < nowStr.length; j++) {
                 String cellValue = nowStr[j];
                 if (cellValue != null && cellValue.length() != 0) {
                     // 检查P._X ...
                     if (XYZStr2.contains(cellValue)) {
                         printItem.add(arrayLists.get(i - 1)[j]);
-
+                        if (cellValue.substring(2, 4).equals("_X")) {
+                            Xp.add(arrayLists.get(i - 1)[0] + "." + arrayLists.get(i - 1)[j]);
+                        }
+                        if (cellValue.substring(2, 4).equals("_Y")) {
+                            Yp.add(arrayLists.get(i - 1)[0] + "." + arrayLists.get(i - 1)[j]);
+                        }
+                        if (cellValue.substring(2, 4).equals("_Z")) {
+                            Zp.add(arrayLists.get(i - 1)[0] + "." + arrayLists.get(i - 1)[j]);
+                        }
                         continue;
                     }
 
@@ -129,7 +147,15 @@ public class MyUtil {
 
                     // 检查X. ...
                     if (XYZStr.contains(cellValue)) {
-
+                        if (cellValue.equals("_X")) {
+                            Xp.add(arrayLists.get(i - 1)[0] + "." + arrayLists.get(i - 1)[j]);
+                        }
+                        if (cellValue.equals("_Y")) {
+                            Yp.add(arrayLists.get(i - 1)[0] + "." + arrayLists.get(i - 1)[j]);
+                        }
+                        if (cellValue.equals("_Z")) {
+                            Zp.add(arrayLists.get(i - 1)[0] + "." + arrayLists.get(i - 1)[j]);
+                        }
                         continue;
                     }
                     // 检查> < ...
@@ -145,6 +171,14 @@ public class MyUtil {
             }
         }
         res = getResStr(formItem, printItem, equelItem);
+        // 补充WHERE 后面的_X_Y_Z
+        // QAQ 发现 Xp 大小为2
+        if (Xp.size() != 0)
+            res.append(" AND").append(Xp.get(0)).append("=").append(Xp.get(1));
+        if (Yp.size() != 0)
+            res.append(" AND").append(Yp.get(0)).append("=").append(Yp.get(1));
+        if (Zp.size() != 0)
+            res.append(" AND").append(Zp.get(0)).append("=").append(Zp.get(1));
         return res.toString();
     }
 }
