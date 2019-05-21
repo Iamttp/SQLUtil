@@ -18,12 +18,50 @@ public class MyUtil {
         add("=");
     }};
 
-    static String getRes(DefaultTableModel tableModel) {
+    // 完成最终的拼接
+    private static StringBuilder getResStr(ArrayList<String> formItem, ArrayList<String> printItem, ArrayList<String> equelItem) {
         StringBuilder res = new StringBuilder();
+        res.append(SELECT);
+        if (printItem.size() != 0)
+            for (int i = 0; i < printItem.size(); i++) {
+                if (i != printItem.size() - 1)
+                    res.append(printItem.get(i)).append(",");
+                else
+                    res.append(printItem.get(i)).append("\n");
+            }
+        else {
+            res.append("*\n");
+        }
+
+        res.append(FROM);
+        for (int i = 0; i < formItem.size(); i++) {
+            if (i != formItem.size() - 1)
+                res.append(formItem.get(i)).append(",");
+            else
+                res.append(formItem.get(i)).append("\n");
+        }
+
+        if (equelItem.size() != 0) {
+            res.append(WHERE);
+            for (int i = 0; i < equelItem.size(); i++) {
+                if (i != equelItem.size() - 1)
+                    res.append(equelItem.get(i)).append(" AND ");
+                else
+                    res.append(equelItem.get(i)).append("\n");
+            }
+        }
+        return res;
+    }
+
+    static String getRes(DefaultTableModel tableModel) {
+        StringBuilder res;
         // 即SELECT后面的元素
         ArrayList<String> printItem = new ArrayList<>();
         // WHERE后面的字符串 V
         ArrayList<String> equelItem = new ArrayList<>();
+        // FROM后面的字符串
+        ArrayList<String> formItem = new ArrayList<>();
+
         for (int i = 1; i < tableModel.getColumnCount(); i++) {
             String cellValue = (String) tableModel.getValueAt(1, i);
 
@@ -45,35 +83,68 @@ public class MyUtil {
                         + tableModel.getValueAt(1, i));
             }
         }
-
-        res.append(SELECT);
-        if (printItem.size() != 0)
-            for (int i = 0; i < printItem.size(); i++) {
-                if (i != printItem.size() - 1)
-                    res.append(printItem.get(i)).append(",");
-                else
-                    res.append(printItem.get(i)).append("\n");
-            }
-        else {
-            res.append("*\n");
-        }
-        res.append(FROM).append((String) tableModel.getValueAt(0, 0)).append("\n");
-
-        if (equelItem.size() != 0) {
-            res.append(WHERE);
-            for (int i = 0; i < equelItem.size(); i++) {
-                if (i != equelItem.size() - 1)
-                    res.append(equelItem.get(i)).append(" AND ");
-                else
-                    res.append(equelItem.get(i)).append("\n");
-            }
-        }
+        formItem.add((String) tableModel.getValueAt(0, 0));
+        res = getResStr(formItem, printItem, equelItem);
         return res.toString();
     }
 
+    private static final List<String> XYZStr = new ArrayList<String>() {{
+        add("_X");
+        add("_Y");
+        add("_Z");
+    }};
+    private static final List<String> XYZStr2 = new ArrayList<String>() {{
+        add("P._X");
+        add("P._Y");
+        add("P._Z");
+    }};
+
     static String getResForMul(ArrayList<String[]> arrayLists) {
-        String res = "";
-        // TODO
-        return res;
+        StringBuilder res;
+        // 即SELECT后面的元素
+        ArrayList<String> printItem = new ArrayList<>();
+        // WHERE后面的字符串 V
+        ArrayList<String> equelItem = new ArrayList<>();
+        // FROM后面的字符串
+        ArrayList<String> formItem = new ArrayList<>();
+
+        for (int i = 1; i < arrayLists.size(); i += 2) {
+            // 取单行（值）
+            String[] nowStr = arrayLists.get(i);
+            for (int j = 0; j < nowStr.length; j++) {
+                String cellValue = nowStr[j];
+                if (cellValue != null && cellValue.length() != 0) {
+                    // 检查P._X ...
+                    if (XYZStr2.contains(cellValue)) {
+                        printItem.add(arrayLists.get(i - 1)[j]);
+
+                        continue;
+                    }
+
+                    // 检查P. ...
+                    if (cellValue.equals(PrintStr)) {
+                        printItem.add(arrayLists.get(i - 1)[j]);
+                        continue;
+                    }
+
+                    // 检查X. ...
+                    if (XYZStr.contains(cellValue)) {
+
+                        continue;
+                    }
+                    // 检查> < ...
+                    if (operatorStr.contains(cellValue.substring(0, 1))) {
+                        equelItem.add(arrayLists.get(i - 1)[j]
+                                + arrayLists.get(i)[j]);
+                        continue;
+                    }
+                    // 检查= （最终，包括普通字符串）
+                    equelItem.add(arrayLists.get(i - 1)[j] + "="
+                            + arrayLists.get(i)[j]);
+                }
+            }
+        }
+        res = getResStr(formItem, printItem, equelItem);
+        return res.toString();
     }
 }
