@@ -2,28 +2,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import java.awt.*;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
-
-/**
- * 自定义按钮
- */
-class ToolbarButton extends JButton {
-    ToolbarButton(String text, int width, int heigth, ActionListener l) {
-        this.setText(text);
-        addActionListener(l);
-        this.setFont(new Font("宋体", Font.BOLD, 30));
-        // 按钮大小设置
-        setPreferredSize(new Dimension(width, heigth));
-    }
-
-    ToolbarButton(String text, int width, int heigth) {
-        this.setText(text);
-        this.setFont(new Font("宋体", Font.BOLD, 30));
-        // 按钮大小设置
-        setPreferredSize(new Dimension(width, heigth));
-    }
-}
 
 /**
  * 自定义表格（加两个按钮）
@@ -74,27 +53,7 @@ class tableBar extends JToolBar {
     }
 }
 
-/**
- * 自定义显示框，加个三个按钮
- */
-class textAreaRes extends JToolBar {
-    JTextArea textArea = new JTextArea();
-    ToolbarButton butRes;
 
-    textAreaRes() {
-        butRes = new ToolbarButton("结果", 100, 100);
-        textArea.setFont(new Font("宋体", Font.BOLD, 30));
-        this.add(textArea);
-
-        JToolBar sonToolBar = new JToolBar();
-        sonToolBar.add(butRes);
-        sonToolBar.setFloatable(false);
-        sonToolBar.setOrientation(VERTICAL);
-        this.add(sonToolBar);
-
-        this.setFloatable(false);
-    }
-}
 
 class NewForm extends JFrame {
 
@@ -105,6 +64,7 @@ class NewForm extends JFrame {
 
     private void setTable() {
         JSplitPane jSplitPaneRes, jSplitPaneTemp = null;
+        // ------------------------------------------------------按照num新建对象和设置布局
         for (int i = 0; i < nowTableNum; i++) {
             jToolBarTable.add(new tableBar());
         }
@@ -142,6 +102,7 @@ class NewForm extends JFrame {
                     }
                     arrayList.add(tempStr2);
                 }
+                // ----------------------------------------------向Util里面的解析函数传入 ArrayList<String[]>
                 jToolBarRes.textArea.setText(MyUtil.getResForMul(arrayList));
             }
         });
