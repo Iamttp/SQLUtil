@@ -1,13 +1,19 @@
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Ubuntu运行参考：https://blog.csdn.net/weixin_42039699/article/details/82110799
+ *
+ * @author ttp
+ */
 public class QForm extends JFrame {
     public QForm() {
         // ---------------------------------------------主窗口设置
-        setTitle("");
-        setSize(500, 200);
+        setTitle("数据库工具集");
+        setSize(800, 300);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
+        // ----------------------------------------------暂时支持4张表
         JRadioButton s1 = new JRadioButton("1") {{
             setFont(new Font("宋体", Font.BOLD, 30));
         }};
@@ -20,44 +26,54 @@ public class QForm extends JFrame {
         JRadioButton s4 = new JRadioButton("4") {{
             setFont(new Font("宋体", Font.BOLD, 30));
         }};
-        JRadioButton s5 = new JRadioButton("5") {{
-            setFont(new Font("宋体", Font.BOLD, 30));
-        }};
-        ButtonGroup bg = new ButtonGroup() {{
+        new ButtonGroup() {{
             add(s1);
             add(s2);
             add(s3);
             add(s4);
-            add(s5);
         }};
         JToolBar jToolBar = new JToolBar() {{
             add(s1);
             add(s2);
             add(s3);
             add(s4);
-//            add(s5);
         }};
 
-        Container cp = getContentPane();
-        JSplitPane jp = new JSplitPane(JSplitPane.VERTICAL_SPLIT, new JLabel("选择你需要表的数量") {{
-            setFont(new Font("宋体", Font.BOLD, 30));
-        }}, jToolBar);
+        // ---------------------------------------------主窗口布局 for QBE
+        JSplitPane jp = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
+                new JLabel("QBE工具：请先选择你需要表的数量,然后点击确认!") {{
+                    setFont(new Font("宋体", Font.BOLD, 30));
+                }}, jToolBar);
         JSplitPane jp2 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, jp, new ToolbarButton("确定", 50, 50, e -> {
-            setVisible(false);
+//            setVisible(false);
             int num = 2;
-            if (s1.isSelected())
+            if (s1.isSelected()) {
                 num = 1;
-            if (s2.isSelected())
+            }
+            if (s2.isSelected()) {
                 num = 2;
-            if (s3.isSelected())
+            }
+            if (s3.isSelected()) {
                 num = 3;
-            if (s4.isSelected())
+            }
+            if (s4.isSelected()) {
                 num = 4;
-            if (s5.isSelected())
-                num = 5;
+            }
             new NewForm(num);
         }));
-        cp.add(jp2, BorderLayout.CENTER);
+
+        // ---------------------------------------------主窗口布局 for 数据库设计
+        JSplitPane jp3 = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
+                new JLabel("关系数据库工具:点击下面的确认继续!") {{
+                    setFont(new Font("宋体", Font.BOLD, 30));
+                }}, new ToolbarButton("确定", 50, 50, e -> {
+//            setVisible(false);
+            new NewForm2();
+        }));
+
+        Container cp = getContentPane();
+        JSplitPane jpRes = new JSplitPane(JSplitPane.VERTICAL_SPLIT, jp2, jp3);
+        cp.add(jpRes, BorderLayout.CENTER);
         setVisible(true);
     }
 }

@@ -13,13 +13,15 @@ class ToolbarButton extends JButton {
         this.setText(text);
         addActionListener(l);
         this.setFont(new Font("宋体", Font.BOLD, 30));
-        setPreferredSize(new Dimension(width, heigth)); // 按钮大小设置
+        // 按钮大小设置
+        setPreferredSize(new Dimension(width, heigth));
     }
 
     ToolbarButton(String text, int width, int heigth) {
         this.setText(text);
         this.setFont(new Font("宋体", Font.BOLD, 30));
-        setPreferredSize(new Dimension(width, heigth)); // 按钮大小设置
+        // 按钮大小设置
+        setPreferredSize(new Dimension(width, heigth));
     }
 }
 
@@ -29,8 +31,8 @@ class ToolbarButton extends JButton {
 class tableBar extends JToolBar {
     private Object[][] obj = {{" "}, {" "}};
     private String[] columnNames = {"col1", "col2", "col3", "col4"};
-    private int heigth = 200;
-    public JTable table = new JTable();
+    private final int heigth = 200;
+    JTable table = new JTable();
 
     tableBar() {
         // ----------------------------------------------table设置
@@ -77,14 +79,14 @@ class tableBar extends JToolBar {
  */
 class textAreaRes extends JToolBar {
     JTextArea textArea = new JTextArea();
-    JToolBar sonToolBar = new JToolBar();
-    public ToolbarButton butRes;
+    ToolbarButton butRes;
 
-    public textAreaRes() {
+    textAreaRes() {
         butRes = new ToolbarButton("结果", 100, 100);
         textArea.setFont(new Font("宋体", Font.BOLD, 30));
         this.add(textArea);
 
+        JToolBar sonToolBar = new JToolBar();
         sonToolBar.add(butRes);
         sonToolBar.setFloatable(false);
         sonToolBar.setOrientation(VERTICAL);
@@ -96,7 +98,7 @@ class textAreaRes extends JToolBar {
 
 class NewForm extends JFrame {
 
-    private int nowTableNum = 2;
+    private int nowTableNum;
     private ArrayList<tableBar> jToolBarTable = new ArrayList<tableBar>() {{
     }};
     private textAreaRes jToolBarRes = new textAreaRes();
@@ -115,18 +117,17 @@ class NewForm extends JFrame {
         setSize(1100, 400 + nowTableNum * 200);
     }
 
-    // 窗口的初始化
     NewForm(int num) {
         // ---------------------------------------------主窗口设置
         setTitle("Query By Example");
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         nowTableNum = num;
         setTable();
 
         jToolBarRes.butRes.addActionListener(e -> {
-            if (nowTableNum == 1)
+            if (nowTableNum == 1) {
                 jToolBarRes.textArea.setText(MyUtil.getRes((DefaultTableModel) jToolBarTable.get(0).table.getModel()));
-            else {
+            } else {
                 ArrayList<String[]> arrayList = new ArrayList<>();
                 for (int i = 0; i < nowTableNum; i++) {
                     JTable jTable = jToolBarTable.get(i).table;
