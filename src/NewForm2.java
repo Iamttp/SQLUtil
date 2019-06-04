@@ -5,13 +5,13 @@ import java.awt.*;
  * @author ttp
  */
 class NewForm2 extends JFrame {
-    private textAreaRes jToolBarRes = new textAreaRes("结果");
+    private textAreaRes2 jToolBarRes = new textAreaRes2("最小依赖集", "候选键");
 
     NewForm2() {
         // ---------------------------------------------主窗口设置
         setTitle("关系数据库设计工具集");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setSize(800, 400);
+        setSize(800, 500);
 
         Container cp = getContentPane();
         JSplitPane jSplitPaneRes = new JSplitPane(JSplitPane.VERTICAL_SPLIT, new JLabel(
@@ -22,7 +22,7 @@ class NewForm2 extends JFrame {
         }}, jToolBarRes);
         cp.add(jSplitPaneRes, BorderLayout.CENTER);
 
-        jToolBarRes.butRes.addActionListener(e -> {
+        jToolBarRes.butRes1.addActionListener(e -> {
             String res;
             try {
                 res = MyUtilForDesign.getSplit(jToolBarRes.textArea.getText());
@@ -33,6 +33,12 @@ class NewForm2 extends JFrame {
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
+        });
+
+        jToolBarRes.butRes2.addActionListener(e -> {
+            String res = "xxx";
+            jToolBarRes.textArea.append(res);
+            setSize(1000, 1000);
         });
 
         setVisible(true);
