@@ -4,7 +4,7 @@ import java.awt.*;
 /**
  * @author ttp
  */
-public class NewForm2 extends JFrame {
+class NewForm2 extends JFrame {
     private textAreaRes jToolBarRes = new textAreaRes("结果");
 
     NewForm2() {
@@ -29,7 +29,7 @@ public class NewForm2 extends JFrame {
                 jToolBarRes.textArea.append(res);
                 setSize(1000, 1000);
             } catch (UnsupportedOperationException ex) {
-                MyUtilForQBE.Message("请检查字符串的格式");
+                MyUtilForQBE.message("请检查字符串的格式");
             } catch (Exception ex) {
                 ex.printStackTrace();
             }

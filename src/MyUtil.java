@@ -5,15 +5,15 @@ import java.util.Arrays;
 import java.util.List;
 
 class MyUtilForQBE {
-    public static void Message(String cellValue) {
+    public static void message(String cellValue) {
         JOptionPane.showMessageDialog(null, cellValue, "", JOptionPane.PLAIN_MESSAGE);
     }
 
     private static final String SELECT = "SELECT ";
     private static final String FROM = "FROM";
     private static final String WHERE = "WHERE ";
-    private static final String PrintStr = "P.";
-    private static final List<String> operatorStr = new ArrayList<String>() {{
+    private static final String PRINT_STR = "P.";
+    private static final List<String> OPERATOR_STR = new ArrayList<String>() {{
         add(">");
         add("<");
         add("=");
@@ -67,13 +67,13 @@ class MyUtilForQBE {
             String cellValue = (String) tableModel.getValueAt(1, i);
 
             if (cellValue != null && cellValue.length() != 0) {
-                if (cellValue.equals(PrintStr)) {
+                if (cellValue.equals(PRINT_STR)) {
                     printItem.add((String) tableModel.getValueAt(0, i));
                     continue;
                 }
 
                 // > <
-                if (operatorStr.contains(cellValue.substring(0, 1))) {
+                if (OPERATOR_STR.contains(cellValue.substring(0, 1))) {
                     equelItem.add((String) tableModel.getValueAt(0, i)
                             + tableModel.getValueAt(1, i));
                     continue;
@@ -89,12 +89,12 @@ class MyUtilForQBE {
         return res.toString();
     }
 
-    private static final List<String> XYZStr = new ArrayList<String>() {{
+    private static final List<String> XYZ_STR = new ArrayList<String>() {{
         add("_X");
         add("_Y");
         add("_Z");
     }};
-    private static final List<String> XYZStr2 = new ArrayList<String>() {{
+    private static final List<String> XYZ_STR2 = new ArrayList<String>() {{
         add("P._X");
         add("P._Y");
         add("P._Z");
@@ -110,11 +110,11 @@ class MyUtilForQBE {
         ArrayList<String> formItem = new ArrayList<>();
 
         // 匹配的_X
-        ArrayList<String> Xp = new ArrayList<>();
+        ArrayList<String> xp = new ArrayList<>();
         // 匹配的_Y
-        ArrayList<String> Yp = new ArrayList<>();
+        ArrayList<String> yp = new ArrayList<>();
         // 匹配的_Z
-        ArrayList<String> Zp = new ArrayList<>();
+        ArrayList<String> zp = new ArrayList<>();
 
         for (int i = 1; i < arrayLists.size(); i += 2) {
             // 取单行（值）
@@ -126,41 +126,41 @@ class MyUtilForQBE {
                 String cellValue = nowStr[j];
                 if (cellValue != null && cellValue.length() != 0) {
                     // 检查P._X ...
-                    if (XYZStr2.contains(cellValue)) {
+                    if (XYZ_STR2.contains(cellValue)) {
                         printItem.add(arrayLists.get(i - 1)[j]);
-                        if (cellValue.substring(2, 4).equals("_X")) {
-                            Xp.add(arrayLists.get(i - 1)[0] + "." + arrayLists.get(i - 1)[j]);
+                        if ("_X".equals(cellValue.substring(2, 4))) {
+                            xp.add(arrayLists.get(i - 1)[0] + "." + arrayLists.get(i - 1)[j]);
                         }
-                        if (cellValue.substring(2, 4).equals("_Y")) {
-                            Yp.add(arrayLists.get(i - 1)[0] + "." + arrayLists.get(i - 1)[j]);
+                        if ("_Y".equals(cellValue.substring(2, 4))) {
+                            yp.add(arrayLists.get(i - 1)[0] + "." + arrayLists.get(i - 1)[j]);
                         }
-                        if (cellValue.substring(2, 4).equals("_Z")) {
-                            Zp.add(arrayLists.get(i - 1)[0] + "." + arrayLists.get(i - 1)[j]);
+                        if ("_Z".equals(cellValue.substring(2, 4))) {
+                            zp.add(arrayLists.get(i - 1)[0] + "." + arrayLists.get(i - 1)[j]);
                         }
                         continue;
                     }
 
                     // 检查P. ...
-                    if (cellValue.equals(PrintStr)) {
+                    if (cellValue.equals(PRINT_STR)) {
                         printItem.add(arrayLists.get(i - 1)[j]);
                         continue;
                     }
 
                     // 检查X. ...
-                    if (XYZStr.contains(cellValue)) {
-                        if (cellValue.equals("_X")) {
-                            Xp.add(arrayLists.get(i - 1)[0] + "." + arrayLists.get(i - 1)[j]);
+                    if (XYZ_STR.contains(cellValue)) {
+                        if ("_X".equals(cellValue)) {
+                            xp.add(arrayLists.get(i - 1)[0] + "." + arrayLists.get(i - 1)[j]);
                         }
-                        if (cellValue.equals("_Y")) {
-                            Yp.add(arrayLists.get(i - 1)[0] + "." + arrayLists.get(i - 1)[j]);
+                        if ("_Y".equals(cellValue)) {
+                            yp.add(arrayLists.get(i - 1)[0] + "." + arrayLists.get(i - 1)[j]);
                         }
-                        if (cellValue.equals("_Z")) {
-                            Zp.add(arrayLists.get(i - 1)[0] + "." + arrayLists.get(i - 1)[j]);
+                        if ("_Z".equals(cellValue)) {
+                            zp.add(arrayLists.get(i - 1)[0] + "." + arrayLists.get(i - 1)[j]);
                         }
                         continue;
                     }
                     // 检查> < ...
-                    if (operatorStr.contains(cellValue.substring(0, 1))) {
+                    if (OPERATOR_STR.contains(cellValue.substring(0, 1))) {
                         equelItem.add(arrayLists.get(i - 1)[j]
                                 + arrayLists.get(i)[j]);
                         continue;
@@ -173,13 +173,13 @@ class MyUtilForQBE {
         }
         res = getResStr(formItem, printItem, equelItem);
         // 补充WHERE 后面的_X_Y_Z
-        // QAQ 发现 Xp 大小为2
-        if (Xp.size() != 0)
-            res.append(" AND").append(Xp.get(0)).append("=").append(Xp.get(1));
-        if (Yp.size() != 0)
-            res.append(" AND").append(Yp.get(0)).append("=").append(Yp.get(1));
-        if (Zp.size() != 0)
-            res.append(" AND").append(Zp.get(0)).append("=").append(Zp.get(1));
+        // QAQ 发现 xp 大小为2
+        if (xp.size() != 0)
+            res.append(" AND").append(xp.get(0)).append("=").append(xp.get(1));
+        if (yp.size() != 0)
+            res.append(" AND").append(yp.get(0)).append("=").append(yp.get(1));
+        if (zp.size() != 0)
+            res.append(" AND").append(zp.get(0)).append("=").append(zp.get(1));
         return res.toString();
     }
 }
@@ -197,26 +197,25 @@ class MyUtilForDesign {
         // 用空字符串替换所有要查找的字符串
         String destStr = str.replaceAll(chs, "");
         // 查找字符出现的个数 = （原字符串长度 - 替换后的字符串长度）/要查找的字符串长度
-        int charCount = (str.length() - destStr.length()) / chs.length();
-
-        return charCount;
+        return (str.length() - destStr.length()) / chs.length();
     }
 
     /**
-     * 有序数组去重 TODO
+     * 有序数组去重
      */
     public static int removeDuplicates(char[] nums) {
         if (nums.length == 0)
             return 0;
-        //判断无输入
-        int number = 0;//标记计数
+        //判断无输入,标记计数
+        int number = 0;
         for (int i = 0; i < nums.length; i++) {
             if (nums[i] != nums[number]) {
                 number++;
                 nums[number] = nums[i];
             }
         }
-        number += 1; //标记+1即为数字个数
+        //标记+1即为数字个数
+        number += 1;
         return number;
     }
 
@@ -275,13 +274,13 @@ class MyUtilForDesign {
         ResForHelp.append("\n\n")
                 .append("属性集为").append(testStr).append("  ")
                 .append("FD集为").append(testArrayStr).append("\t结果为：");
-        for (int i = 0; i < res.size(); i++) {
-            ResForHelp.append(Arrays.toString(res.get(i))).append(" ");
+        for (String[] re : res) {
+            ResForHelp.append(Arrays.toString(re)).append(" ");
         }
         return res.get(res.size() - 1)[testArrayStr.size() - 1];
     }
 
-    private static String getRes(String[] strings) {
+    public static String getRes(String[] strings) {
         ResForHelp = new StringBuilder();
         // ---------------------------第一步：FD写成右边为单属性.得到stringArrayList  exp: A->B, A->BC, B->C
         ArrayList<String> stringArrayList = new ArrayList<>();
@@ -301,6 +300,7 @@ class MyUtilForDesign {
         for (int i = 0; i < stringArrayList.size(); i++) {
             // 依赖关系 FD集
             ArrayList<String> testArrayStr = (ArrayList<String>) stringArrayList.clone();
+            // TODO 循环里面有remove
             testArrayStr.remove(i);
             // 属性集
             String[] temp = stringArrayList.get(i).split(SPLITABC);
@@ -313,11 +313,11 @@ class MyUtilForDesign {
             }
         }
 
-        ArrayList<String> ResRes = new ArrayList<>();
-        for (int i = 0; i < doGet.size(); i++) {
-            ResRes.add(stringArrayList.get(doGet.get(i)));
+        ArrayList<String> resRes = new ArrayList<>();
+        for (Integer integer : doGet) {
+            resRes.add(stringArrayList.get(integer));
         }
 
-        return "\n单属性去重为：" + stringArrayList + ResForHelp + "\n最小依赖集最终结果：\n" + ResRes.toString();
+        return "\n单属性去重为：" + stringArrayList + ResForHelp + "\n最小依赖集最终结果：\n" + resRes.toString();
     }
 }
