@@ -1,9 +1,10 @@
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-public class MyUtil {
+class MyUtilForQBE {
     public static void Message(String cellValue) {
         JOptionPane.showMessageDialog(null, cellValue, "", JOptionPane.PLAIN_MESSAGE);
     }
@@ -180,5 +181,135 @@ public class MyUtil {
         if (Zp.size() != 0)
             res.append(" AND").append(Zp.get(0)).append("=").append(Zp.get(1));
         return res.toString();
+    }
+}
+
+class MyUtilForDesign {
+    // 分割字符串
+    private static String SPLITABC = "->";
+    private static String SPLITSTR = ",";
+    private static StringBuilder ResForHelp = new StringBuilder();
+
+    /**
+     * 获取字符串出现的个数
+     */
+    public static int getSubStr(String str, String chs) {
+        // 用空字符串替换所有要查找的字符串
+        String destStr = str.replaceAll(chs, "");
+        // 查找字符出现的个数 = （原字符串长度 - 替换后的字符串长度）/要查找的字符串长度
+        int charCount = (str.length() - destStr.length()) / chs.length();
+
+        return charCount;
+    }
+
+    /**
+     * 有序数组去重
+     */
+    public static int removeDuplicates(char[] nums) {
+        if (nums.length == 0)
+            return 0;
+        //判断无输入
+        int number = 0;//标记计数
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] != nums[number]) {
+                number++;
+                nums[number] = nums[i];
+            }
+        }
+        number += 1; //标记+1即为数字个数
+        return number;
+    }
+
+    // 通过,初步分解
+    public static String getSplit(String str) throws Exception {
+        // 去回车空格
+        str = str.replaceAll(" ", "");
+        str = str.replaceAll("\n", "");
+        // "->"数目应该比","多一个
+        if (getSubStr(str, "->") - 1 != getSubStr(str, ",")) {
+            throw new UnsupportedOperationException("检查字符串格式");
+        }
+        String[] strings = str.split(SPLITSTR);
+        return getRes(strings);
+    }
+
+    public static String getResAdd(ArrayList<String> testArrayStr, String testStr) {
+        // 求解属性集闭包 exp : testArrayStr = A->B A-C B->C   testStr = A
+        String tempStr = testStr;
+        ArrayList<String[]> res = new ArrayList<>();
+
+        // 一次do 循环即属性集扫描一次
+        do {
+            // temp : A ---- AB ----- ABC ---- ABC
+            String[] temp = new String[testArrayStr.size() + 1];
+            temp[0] = tempStr;
+            for (int i = 1; i < temp.length; i++) {
+                String[] strAll = testArrayStr.get(i - 1).split("->");
+                if (tempStr.contains(strAll[0])) {
+                    tempStr += strAll[1];
+                    //1，把tempStr转换为字符数组
+                    char[] arrayCh = tempStr.toCharArray();
+                    //2，利用数组帮助类自动排序,！！主要是考虑包含关系
+                    Arrays.sort(arrayCh);
+                    //3.排序数组去重!!leetcode
+                    int length = removeDuplicates(arrayCh);
+                    StringBuilder stringBuilder = new StringBuilder();
+                    for (int j = 0; j < length; j++) {
+                        stringBuilder.append(arrayCh[j]);
+                    }
+                    tempStr = stringBuilder.toString();
+                }
+                temp[i] = tempStr;
+            }
+            res.add(temp);
+        } while (res.size() - 2 < 0 ||
+                (res.size() - 2 > 0 && !res.get(res.size() - 1)[testArrayStr.size() - 1]
+                        .equals(res.get(res.size() - 2)[testArrayStr.size() - 1])));
+        ResForHelp.append("\n\n")
+                .append("属性集为").append(testStr).append("  ")
+                .append("FD集为").append(testArrayStr).append("\t结果为：");
+        for (int i = 0; i < res.size(); i++) {
+            ResForHelp.append(Arrays.toString(res.get(i))).append(" ");
+        }
+        return res.get(res.size() - 1)[testArrayStr.size() - 1];
+    }
+
+    private static String getRes(String[] strings) {
+        // ---------------------------第一步：FD写成右边为单属性.得到stringArrayList  exp: A->B, A->BC, B->C
+        ArrayList<String> stringArrayList = new ArrayList<>();
+        for (String strNow : strings) {
+            String[] strNowSplit = strNow.split(SPLITABC);
+            for (int j = 0; j < strNowSplit[1].length(); j++) {
+                // 去重
+                if (!stringArrayList.contains(strNowSplit[0] + SPLITABC + strNowSplit[1].substring(j, j + 1))) {
+                    stringArrayList.add(
+                            strNowSplit[0] + SPLITABC + strNowSplit[1].substring(j, j + 1)
+                    );
+                }
+            }
+        }
+        // ----------------------------第二步：考虑属性集的闭包 exp: A->B, A->C, B->C A->B,A->C,B->C,A->B,AB->C
+        ArrayList<Integer> doGet = new ArrayList<>();
+        for (int i = 0; i < stringArrayList.size(); i++) {
+            // 依赖关系 FD集
+            ArrayList<String> testArrayStr = (ArrayList<String>) stringArrayList.clone();
+            testArrayStr.remove(i);
+            // 属性集
+            String[] temp = stringArrayList.get(i).split(SPLITABC);
+            String testStr = temp[0];
+            // 求解属性集闭包
+            String res1 = getResAdd(testArrayStr, testStr);
+            String res2 = getResAdd(stringArrayList, testStr);
+            if (!res1.equals(res2)) {
+                doGet.add(i);
+            }
+        }
+
+        ArrayList<String> ResRes = new ArrayList<>();
+        for (int i = 0; i < doGet.size(); i++) {
+            ResRes.add(stringArrayList.get(doGet.get(i)));
+        }
+
+        return "\n单属性去重为：" + stringArrayList + ResForHelp + "\n最终结果：\n" + ResRes.toString();
     }
 }

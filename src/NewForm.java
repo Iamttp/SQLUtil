@@ -86,7 +86,7 @@ class NewForm extends JFrame {
 
         jToolBarRes.butRes.addActionListener(e -> {
             if (nowTableNum == 1) {
-                jToolBarRes.textArea.setText(MyUtil.getRes((DefaultTableModel) jToolBarTable.get(0).table.getModel()));
+                jToolBarRes.textArea.setText(MyUtilForQBE.getRes((DefaultTableModel) jToolBarTable.get(0).table.getModel()));
             } else {
                 ArrayList<String[]> arrayList = new ArrayList<>();
                 for (int i = 0; i < nowTableNum; i++) {
@@ -103,7 +103,7 @@ class NewForm extends JFrame {
                     arrayList.add(tempStr2);
                 }
                 // ----------------------------------------------向Util里面的解析函数传入 ArrayList<String[]>
-                jToolBarRes.textArea.setText(MyUtil.getResForMul(arrayList));
+                jToolBarRes.textArea.setText(MyUtilForQBE.getResForMul(arrayList));
             }
         });
         setVisible(true);
