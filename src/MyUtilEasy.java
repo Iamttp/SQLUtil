@@ -31,6 +31,14 @@ public class MyUtilEasy {
         return number;
     }
 
+    public static boolean containsDeep(String big, String small) {
+        for (int i = 0; i < small.length(); i++) {
+            if (!big.contains(small.substring(i, i + 1))) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     public static void message(String cellValue) {
         JOptionPane.showMessageDialog(null, cellValue, "", JOptionPane.PLAIN_MESSAGE);

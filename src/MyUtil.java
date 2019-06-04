@@ -1,4 +1,5 @@
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -377,7 +378,8 @@ class MyUtilForDesign {
         for (int i = 0; i < resRes.size(); i++) {
             String nowStr = resRes.get(i);
             for (int j = 0; j < resRes.size(); j++) {
-                if (i != j && resRes.get(j).contains(nowStr)) {
+                // 坑 contains 无法解决 BD BCD 问题
+                if (i != j && MyUtilEasy.containsDeep(resRes.get(j),nowStr)) {
                     resRes.remove(resRes.get(j--));
                 }
             }
