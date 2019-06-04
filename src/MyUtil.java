@@ -188,7 +188,7 @@ class MyUtilForDesign {
     // 分割字符串
     private static String SPLITABC = "->";
     private static String SPLITSTR = ",";
-    private static StringBuilder ResForHelp = new StringBuilder();
+    private static StringBuilder ResForHelp;
 
     /**
      * 获取字符串出现的个数
@@ -282,6 +282,7 @@ class MyUtilForDesign {
     }
 
     private static String getRes(String[] strings) {
+        ResForHelp = new StringBuilder();
         // ---------------------------第一步：FD写成右边为单属性.得到stringArrayList  exp: A->B, A->BC, B->C
         ArrayList<String> stringArrayList = new ArrayList<>();
         for (String strNow : strings) {
