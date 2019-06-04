@@ -37,10 +37,16 @@ class NewForm2 extends JFrame {
         });
 
         jToolBarRes.butRes2.addActionListener(e -> {
-            String[] temp = MyUtilForDesign.getSplit(jToolBarRes.textArea.getText());
-            String res = MyUtilForDesign.getCandidateKey(temp);
-            jToolBarRes.textArea.append(res);
-            setSize(1000, 1000);
+            try {
+                String[] temp = MyUtilForDesign.getSplit(jToolBarRes.textArea.getText());
+                String res = MyUtilForDesign.getCandidateKey(temp);
+                jToolBarRes.textArea.append(res);
+                setSize(1000, 1000);
+            } catch (UnsupportedOperationException ex) {
+                MyUtilEasy.message("请检查字符串的格式");
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         });
 
         setVisible(true);
