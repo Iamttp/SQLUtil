@@ -271,7 +271,7 @@ class MyUtilForDesign {
         } while (res.size() - 2 < 0 ||
                 (res.size() - 2 > 0 && !res.get(res.size() - 1)[testArrayStr.size() - 1]
                         .equals(res.get(res.size() - 2)[testArrayStr.size() - 1])));
-        ResForHelp.append("\n\n")
+        ResForHelp.append("\n")
                 .append("属性集为").append(testStr).append("  ")
                 .append("FD集为").append(testArrayStr).append("\t结果为：");
         for (String[] re : res) {
@@ -299,9 +299,17 @@ class MyUtilForDesign {
         ArrayList<Integer> doGet = new ArrayList<>();
         for (int i = 0; i < stringArrayList.size(); i++) {
             // 依赖关系 FD集
-            ArrayList<String> testArrayStr = (ArrayList<String>) stringArrayList.clone();
-            // TODO 循环里面有remove
-            testArrayStr.remove(i);
+            // --------一旦冗余即刻清除 exp A->C,C->A,B->A,B->C,D->A,D->C,BD->A
+            ArrayList<String> testArrayStr = new ArrayList<>();
+            for (int j = 0; j < stringArrayList.size(); j++) {
+                if (j == i) {
+                    continue;
+                }
+                if (j > i || doGet.contains(j)) {
+                    testArrayStr.add(stringArrayList.get(j));
+                }
+            }
+            // -------
             // 属性集
             String[] temp = stringArrayList.get(i).split(SPLITABC);
             String testStr = temp[0];
