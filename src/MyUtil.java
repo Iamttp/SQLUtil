@@ -203,7 +203,7 @@ class MyUtilForDesign {
     }
 
     /**
-     * 有序数组去重
+     * 有序数组去重 TODO
      */
     public static int removeDuplicates(char[] nums) {
         if (nums.length == 0)
@@ -220,13 +220,20 @@ class MyUtilForDesign {
         return number;
     }
 
+
     // 通过,初步分解
-    public static String getSplit(String str) throws Exception {
+    public static String getSplit(String str) {
+        // \s匹配任意的空白符（包括空格，制表符(Tab)，换行符，中文全角空格）
+        // \S则是任意不是空白符的字符
+        // 添加正则表达式可以使用// /**/注释
+        str += "\n";
+        str = str.replaceAll("//.*\\n", "");
+        str = str.replaceAll("/\\*{1,2}[\\s\\S]*?\\*/", "");
         // 去回车空格
         str = str.replaceAll(" ", "");
         str = str.replaceAll("\n", "");
         // "->"数目应该比","多一个
-        if (getSubStr(str, "->") - 1 != getSubStr(str, ",")) {
+        if (getSubStr(str, SPLITABC) - 1 != getSubStr(str, SPLITSTR)) {
             throw new UnsupportedOperationException("检查字符串格式");
         }
         String[] strings = str.split(SPLITSTR);
@@ -244,7 +251,7 @@ class MyUtilForDesign {
             String[] temp = new String[testArrayStr.size() + 1];
             temp[0] = tempStr;
             for (int i = 1; i < temp.length; i++) {
-                String[] strAll = testArrayStr.get(i - 1).split("->");
+                String[] strAll = testArrayStr.get(i - 1).split(SPLITABC);
                 if (tempStr.contains(strAll[0])) {
                     tempStr += strAll[1];
                     //1，把tempStr转换为字符数组
@@ -310,6 +317,6 @@ class MyUtilForDesign {
             ResRes.add(stringArrayList.get(doGet.get(i)));
         }
 
-        return "\n单属性去重为：" + stringArrayList + ResForHelp + "\n最终结果：\n" + ResRes.toString();
+        return "\n单属性去重为：" + stringArrayList + ResForHelp + "\n最小依赖集最终结果：\n" + ResRes.toString();
     }
 }

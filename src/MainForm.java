@@ -6,7 +6,7 @@ import java.awt.*;
  *
  * @author ttp
  */
-public class QForm extends JFrame {
+class QForm extends JFrame {
     public QForm() {
         // ---------------------------------------------主窗口设置
         setTitle("数据库工具集");

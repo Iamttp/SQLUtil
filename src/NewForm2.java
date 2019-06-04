@@ -11,7 +11,7 @@ public class NewForm2 extends JFrame {
         // ---------------------------------------------主窗口设置
         setTitle("关系数据库设计工具集");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setSize(800, 350);
+        setSize(800, 400);
 
         Container cp = getContentPane();
         JSplitPane jSplitPaneRes = new JSplitPane(JSplitPane.VERTICAL_SPLIT, new JLabel(
