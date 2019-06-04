@@ -1,14 +1,9 @@
-import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 class MyUtilForQBE {
-    public static void message(String cellValue) {
-        JOptionPane.showMessageDialog(null, cellValue, "", JOptionPane.PLAIN_MESSAGE);
-    }
-
     private static final String SELECT = "SELECT ";
     private static final String FROM = "FROM";
     private static final String WHERE = "WHERE ";
@@ -19,8 +14,26 @@ class MyUtilForQBE {
         add("=");
     }};
 
-    // 完成最终的拼接
-    private static StringBuilder getResStr(ArrayList<String> formItem, ArrayList<String> printItem, ArrayList<String> equelItem) {
+    private static final List<String> XYZ_STR = new ArrayList<String>() {{
+        add("_X");
+        add("_Y");
+        add("_Z");
+    }};
+    private static final List<String> XYZ_STR2 = new ArrayList<String>() {{
+        add("P._X");
+        add("P._Y");
+        add("P._Z");
+    }};
+
+    /**
+     * 完成最终的拼接
+     *
+     * @param fromItem  FROM后面的项目
+     * @param printItem SELECT后面的项目
+     * @param equelItem WHERE后面的项目
+     * @return 拼接结果
+     */
+    private static StringBuilder getResStr(ArrayList<String> fromItem, ArrayList<String> printItem, ArrayList<String> equelItem) {
         StringBuilder res = new StringBuilder();
         res.append(SELECT);
         if (printItem.size() != 0)
@@ -35,11 +48,11 @@ class MyUtilForQBE {
         }
 
         res.append(FROM);
-        for (int i = 0; i < formItem.size(); i++) {
-            if (i != formItem.size() - 1)
-                res.append(formItem.get(i)).append(",");
+        for (int i = 0; i < fromItem.size(); i++) {
+            if (i != fromItem.size() - 1)
+                res.append(fromItem.get(i)).append(",");
             else
-                res.append(formItem.get(i)).append("\n");
+                res.append(fromItem.get(i)).append("\n");
         }
 
         if (equelItem.size() != 0) {
@@ -54,6 +67,9 @@ class MyUtilForQBE {
         return res;
     }
 
+    /**
+     * 单张表解析
+     */
     static String getRes(DefaultTableModel tableModel) {
         StringBuilder res;
         // 即SELECT后面的元素
@@ -89,17 +105,9 @@ class MyUtilForQBE {
         return res.toString();
     }
 
-    private static final List<String> XYZ_STR = new ArrayList<String>() {{
-        add("_X");
-        add("_Y");
-        add("_Z");
-    }};
-    private static final List<String> XYZ_STR2 = new ArrayList<String>() {{
-        add("P._X");
-        add("P._Y");
-        add("P._Z");
-    }};
-
+    /**
+     * 多张表解析
+     */
     static String getResForMul(ArrayList<String[]> arrayLists) {
         StringBuilder res;
         // 即SELECT后面的元素
@@ -191,37 +199,12 @@ class MyUtilForDesign {
     private static StringBuilder ResForHelp;
 
     /**
-     * 获取字符串出现的个数
+     * 通过,初步分解
+     *
+     * @param str 用户输入
+     * @return 解析，分割结果
      */
-    public static int getSubStr(String str, String chs) {
-        // 用空字符串替换所有要查找的字符串
-        String destStr = str.replaceAll(chs, "");
-        // 查找字符出现的个数 = （原字符串长度 - 替换后的字符串长度）/要查找的字符串长度
-        return (str.length() - destStr.length()) / chs.length();
-    }
-
-    /**
-     * 有序数组去重
-     */
-    public static int removeDuplicates(char[] nums) {
-        if (nums.length == 0)
-            return 0;
-        //判断无输入,标记计数
-        int number = 0;
-        for (int i = 0; i < nums.length; i++) {
-            if (nums[i] != nums[number]) {
-                number++;
-                nums[number] = nums[i];
-            }
-        }
-        //标记+1即为数字个数
-        number += 1;
-        return number;
-    }
-
-
-    // 通过,初步分解
-    public static String getSplit(String str) {
+    public static String[] getSplit(String str) {
         // \s匹配任意的空白符（包括空格，制表符(Tab)，换行符，中文全角空格）
         // \S则是任意不是空白符的字符
         // 添加正则表达式可以使用// /**/注释
@@ -232,15 +215,20 @@ class MyUtilForDesign {
         str = str.replaceAll(" ", "");
         str = str.replaceAll("\n", "");
         // "->"数目应该比","多一个
-        if (getSubStr(str, SPLITABC) - 1 != getSubStr(str, SPLITSTR)) {
+        if (MyEasyUtil.getSubStr(str, SPLITABC) - 1 != MyEasyUtil.getSubStr(str, SPLITSTR)) {
             throw new UnsupportedOperationException("检查字符串格式");
         }
-        String[] strings = str.split(SPLITSTR);
-        return getRes(strings);
+        return str.split(SPLITSTR);
     }
 
+    /**
+     * 求解属性集闭包
+     *
+     * @param testArrayStr testArrayStr = A->B A-C B->C
+     * @param testStr      testStr = A
+     * @return A+
+     */
     public static String getResAdd(ArrayList<String> testArrayStr, String testStr) {
-        // 求解属性集闭包 exp : testArrayStr = A->B A-C B->C   testStr = A
         String tempStr = testStr;
         ArrayList<String[]> res = new ArrayList<>();
 
@@ -258,7 +246,7 @@ class MyUtilForDesign {
                     //2，利用数组帮助类自动排序,！！主要是考虑包含关系
                     Arrays.sort(arrayCh);
                     //3.排序数组去重!!leetcode
-                    int length = removeDuplicates(arrayCh);
+                    int length = MyEasyUtil.removeDuplicates(arrayCh);
                     StringBuilder stringBuilder = new StringBuilder();
                     for (int j = 0; j < length; j++) {
                         stringBuilder.append(arrayCh[j]);
@@ -280,6 +268,12 @@ class MyUtilForDesign {
         return res.get(res.size() - 1)[testArrayStr.size() - 1];
     }
 
+    /**
+     * 获取最小依赖集
+     *
+     * @param strings A->B A-C B->C
+     * @return 带过程的最小依赖集
+     */
     public static String getRes(String[] strings) {
         ResForHelp = new StringBuilder();
         // ---------------------------第一步：FD写成右边为单属性.得到stringArrayList  exp: A->B, A->BC, B->C
