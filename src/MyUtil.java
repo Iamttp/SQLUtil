@@ -215,7 +215,7 @@ class MyUtilForDesign {
         str = str.replaceAll(" ", "");
         str = str.replaceAll("\n", "");
         // "->"数目应该比","多一个
-        if (MyEasyUtil.getSubStr(str, SPLITABC) - 1 != MyEasyUtil.getSubStr(str, SPLITSTR)) {
+        if (MyUtilEasy.getSubStr(str, SPLITABC) - 1 != MyUtilEasy.getSubStr(str, SPLITSTR)) {
             throw new UnsupportedOperationException("检查字符串格式");
         }
         return str.split(SPLITSTR);
@@ -246,7 +246,7 @@ class MyUtilForDesign {
                     //2，利用数组帮助类自动排序,！！主要是考虑包含关系
                     Arrays.sort(arrayCh);
                     //3.排序数组去重!!leetcode
-                    int length = MyEasyUtil.removeDuplicates(arrayCh);
+                    int length = MyUtilEasy.removeDuplicates(arrayCh);
                     StringBuilder stringBuilder = new StringBuilder();
                     for (int j = 0; j < length; j++) {
                         stringBuilder.append(arrayCh[j]);
@@ -265,30 +265,19 @@ class MyUtilForDesign {
         for (String[] re : res) {
             ResForHelp.append(Arrays.toString(re)).append(" ");
         }
-        return res.get(res.size() - 1)[testArrayStr.size() - 1];
+        return res.get(res.size() - 1)[testArrayStr.size()];
     }
 
     /**
      * 获取最小依赖集
      *
-     * @param strings A->B A-C B->C
+     * @param strings [A->C, C->A, B->A, B->C, D->A, D->C, BD->A]
      * @return 带过程的最小依赖集
      */
     public static String getRes(String[] strings) {
         ResForHelp = new StringBuilder();
         // ---------------------------第一步：FD写成右边为单属性.得到stringArrayList  exp: A->B, A->BC, B->C
-        ArrayList<String> stringArrayList = new ArrayList<>();
-        for (String strNow : strings) {
-            String[] strNowSplit = strNow.split(SPLITABC);
-            for (int j = 0; j < strNowSplit[1].length(); j++) {
-                // 去重
-                if (!stringArrayList.contains(strNowSplit[0] + SPLITABC + strNowSplit[1].substring(j, j + 1))) {
-                    stringArrayList.add(
-                            strNowSplit[0] + SPLITABC + strNowSplit[1].substring(j, j + 1)
-                    );
-                }
-            }
-        }
+        ArrayList<String> stringArrayList = getStrings(strings);
         // ----------------------------第二步：考虑属性集的闭包 exp: A->B, A->C, B->C A->B,A->C,B->C,A->B,AB->C
         ArrayList<Integer> doGet = new ArrayList<>();
         for (int i = 0; i < stringArrayList.size(); i++) {
@@ -321,5 +310,78 @@ class MyUtilForDesign {
         }
 
         return "\n单属性去重为：" + stringArrayList + ResForHelp + "\n最小依赖集最终结果：\n" + resRes.toString();
+    }
+
+    /**
+     * 第一步：FD写成右边为单属性.得到stringArrayList  exp: A->B, A->BC, B->C
+     */
+    private static ArrayList<String> getStrings(String[] strings) {
+        ArrayList<String> stringArrayList = new ArrayList<>();
+        for (String strNow : strings) {
+            String[] strNowSplit = strNow.split(SPLITABC);
+            for (int j = 0; j < strNowSplit[1].length(); j++) {
+                // 去重
+                if (!stringArrayList.contains(strNowSplit[0] + SPLITABC + strNowSplit[1].substring(j, j + 1))) {
+                    stringArrayList.add(
+                            strNowSplit[0] + SPLITABC + strNowSplit[1].substring(j, j + 1)
+                    );
+                }
+            }
+        }
+        return stringArrayList;
+    }
+
+    public static String getCandidateKey(String[] strings) {
+        ResForHelp = new StringBuilder();
+        ArrayList<String> resRes = new ArrayList<>();
+        // ---------------------------------暴力法
+        ArrayList<String> stringArrayList = getStrings(strings);
+
+        // ----------------------得到所有的元素 ！TODO 优化
+        StringBuilder stringBuilder = new StringBuilder();
+        for (String strNow : stringArrayList) {
+            String[] strNowSplit = strNow.split(SPLITABC);
+            stringBuilder.append(strNowSplit[0]);
+            stringBuilder.append(strNowSplit[1]);
+        }
+        char[] arrayCh = stringBuilder.toString().toCharArray();
+        Arrays.sort(arrayCh);
+        int length = MyUtilEasy.removeDuplicates(arrayCh);
+        stringBuilder = new StringBuilder();
+        for (int j = 0; j < length; j++) {
+            stringBuilder.append(arrayCh[j]);
+        }
+
+        // 假如arrayCh为A,B,C,D，那么ACD的下标即为1011(二进制),
+//        ArrayList<Boolean> integerArrayList = new ArrayList<>(); TODO 优化
+        for (int i = 1; i < Math.pow(2, length); i++) {
+            StringBuilder inputStr = new StringBuilder();
+            int j = 0, tempi = i;
+            while (tempi > 0) {
+                int numNow = tempi % 2;
+                tempi /= 2;
+                if (numNow == 1) {
+//                    inputStr.append(arrayCh[length - j - 1]);
+                    inputStr.append(arrayCh[j]);
+                }
+                j++;
+            }
+            String nowStrRes = getResAdd(stringArrayList, inputStr.toString());
+            if (nowStrRes.equals(stringBuilder.toString())) {
+                resRes.add(inputStr.toString());
+            }
+        }
+
+        // ----------------------------------去除不满足候选键的元素
+//        ArrayList<String> resResRes = new ArrayList<>();
+        for (int i = 0; i < resRes.size(); i++) {
+            String nowStr = resRes.get(i);
+            for (int j = 0; j < resRes.size(); j++) {
+                if (i != j && resRes.get(j).contains(nowStr)) {
+                    resRes.remove(resRes.get(j--));
+                }
+            }
+        }
+        return "\n" + resRes;
     }
 }

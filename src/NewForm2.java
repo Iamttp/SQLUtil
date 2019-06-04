@@ -30,14 +30,15 @@ class NewForm2 extends JFrame {
                 jToolBarRes.textArea.append(res);
                 setSize(1000, 1000);
             } catch (UnsupportedOperationException ex) {
-                MyEasyUtil.message("请检查字符串的格式");
+                MyUtilEasy.message("请检查字符串的格式");
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         });
 
         jToolBarRes.butRes2.addActionListener(e -> {
-            String res = "xxx";
+            String[] temp = MyUtilForDesign.getSplit(jToolBarRes.textArea.getText());
+            String res = MyUtilForDesign.getCandidateKey(temp);
             jToolBarRes.textArea.append(res);
             setSize(1000, 1000);
         });

@@ -65,3 +65,7 @@ TODO 待解决问题 ：
 > [A->C, AC->D]
 
 #### TODO 完成候选键
+
+A->BC,CD->E,B->D,E->A
+
+A,CD,BC,E

@@ -1,6 +1,6 @@
 import javax.swing.*;
 
-public class MyEasyUtil {
+public class MyUtilEasy {
 
     /**
      * 获取字符串出现的个数
