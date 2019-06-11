@@ -85,9 +85,10 @@ public class MyUtilForDesign {
      * 获取最小依赖集
      *
      * @param strings [A->C, C->A, B->A, B->C, D->A, D->C, BD->A]
+     * @param flagStr 1 : 详细信息 0 : 附带部分信息 -1(其他) : 极简信息
      * @return 带过程的最小依赖集
      */
-    public static String getRes(String[] strings, boolean flagStr) {
+    public static String getRes(String[] strings, int flagStr) {
         ResForHelp = new StringBuilder();
         // ---------------------------第一步：FD写成右边为单属性.得到stringArrayList  exp: A->B, A->BC, B->C
         ArrayList<String> stringArrayList = getStrings(strings);
@@ -121,10 +122,12 @@ public class MyUtilForDesign {
         for (Integer integer : doGet) {
             resRes.add(stringArrayList.get(integer));
         }
-        if (flagStr)
+        if (flagStr == 1)
             return "\n单属性去重为：" + stringArrayList + ResForHelp + "\n最小依赖集最终结果：\n" + resRes.toString();
-        else
+        else if (flagStr == 0)
             return "\n最小依赖集最终结果：\n" + resRes.toString();
+        else
+            return resRes.toString();
     }
 
     /**
@@ -146,7 +149,10 @@ public class MyUtilForDesign {
         return stringArrayList;
     }
 
-    public static String getCandidateKey(String[] strings, boolean flagStr) {
+    /**
+     * 获取候选键
+     */
+    public static String getCandidateKey(String[] strings, int flagStr) {
         ResForHelp = new StringBuilder();
         ArrayList<String> resRes = new ArrayList<>();
         // ---------------------------------暴力法
@@ -198,9 +204,30 @@ public class MyUtilForDesign {
                 }
             }
         }
-        if (flagStr) {
-            return "\n单属性去重为：" + stringArrayList + ResForHelp + "\n候选键最终结果：\n"  + resRes;
-        } else
-            return "\n候选键最终结果：\n"  + resRes;
+        if (flagStr == 1) {
+            return "\n单属性去重为：" + stringArrayList + ResForHelp + "\n候选键最终结果：\n" + resRes;
+        } else if (flagStr == 0) {
+            return "\n候选键最终结果：\n" + resRes;
+        } else {
+            return resRes.toString();
+        }
+    }
+
+    /**
+     * 分解为3NF模式集
+     */
+    public static String get3NF(String[] strings, int flagStr) {
+        // res1 [A->B,B->C]
+        String res1 = getRes(strings, -1);
+        res1 = res1.replaceAll("->", "");
+        res1 = res1.substring(1, res1.length() - 1);
+        // res2 [AD]
+        String res2 = getCandidateKey(strings, -1);
+        res2 = res2.substring(1, res2.length() - 1);
+        if (flagStr == 1) {
+            return "\n分解为3NF模式集为：" +  (res1 + "," + res2).replaceAll(" ", "");
+        } else {
+            return "\n" + (res1 + "," + res2).replaceAll(" ", "");
+        }
     }
 }

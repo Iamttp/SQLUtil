@@ -9,7 +9,7 @@ import java.awt.*;
  * @author ttp
  */
 class NewForm2 extends JFrame {
-    private textAreaRes2 jToolBarRes = new textAreaRes2("最小依赖集", "候选键");
+    private textAreaRes2 jToolBarRes = new textAreaRes2("最小依赖集", "候选键", "3NF模式集");
 
     NewForm2() {
         // ---------------------------------------------主窗口设置
@@ -27,10 +27,9 @@ class NewForm2 extends JFrame {
         cp.add(jSplitPaneRes, BorderLayout.CENTER);
 
         jToolBarRes.butRes1.addActionListener(e -> {
-            String res;
             try {
                 String[] temp = MyUtilForDesign.getSplit(jToolBarRes.textArea.getText());
-                res = MyUtilForDesign.getRes(temp, jToolBarRes.s1.isSelected());
+                String res = MyUtilForDesign.getRes(temp, (jToolBarRes.s1.isSelected()) ? 1 : 0);
                 jToolBarRes.textArea.append(res);
                 setSize(1000, 1000);
             } catch (UnsupportedOperationException ex) {
@@ -43,7 +42,21 @@ class NewForm2 extends JFrame {
         jToolBarRes.butRes2.addActionListener(e -> {
             try {
                 String[] temp = MyUtilForDesign.getSplit(jToolBarRes.textArea.getText());
-                String res = MyUtilForDesign.getCandidateKey(temp, jToolBarRes.s1.isSelected());
+                String res = MyUtilForDesign.getCandidateKey(temp, (jToolBarRes.s1.isSelected()) ? 1 : 0);
+                jToolBarRes.textArea.append(res);
+                setSize(1000, 1000);
+            } catch (UnsupportedOperationException ex) {
+                MyUtilEasy.message("请检查字符串的格式");
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+
+
+        jToolBarRes.butRes3.addActionListener(e -> {
+            try {
+                String[] temp = MyUtilForDesign.getSplit(jToolBarRes.textArea.getText());
+                String res = MyUtilForDesign.get3NF(temp, (jToolBarRes.s1.isSelected()) ? 1 : 0);
                 jToolBarRes.textArea.append(res);
                 setSize(1000, 1000);
             } catch (UnsupportedOperationException ex) {
