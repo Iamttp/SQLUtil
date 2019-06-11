@@ -2,7 +2,10 @@ package MyUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
+import static MyUtil.MyUtilEasy.containsDeep;
 import static MyUtil.MyUtilEasy.getSubStr;
 
 public class MyUtilForDesign {
@@ -217,17 +220,37 @@ public class MyUtilForDesign {
      * 分解为3NF模式集
      */
     public static String get3NF(String[] strings, int flagStr) {
-        // res1 [A->B,B->C]
+        // res1 AB->DE,B->DE,C->C
         String res1 = getRes(strings, -1);
-        res1 = res1.replaceAll("->", "");
         res1 = res1.substring(1, res1.length() - 1);
+        // {"B->D", "B->E"}
+        String[] res1Array = res1.replaceAll(" ", "").split(",");
+        // 最小依赖集左部相同的合并 没想到map这么适合!!!
+        Map<String, String> map = new HashMap<>();
+        for (String strNow : res1Array) {
+            String[] temp = strNow.split(SPLITABC);
+            if (map.containsKey(temp[0])) {
+                map.put(temp[0], temp[1] + map.get(temp[0]));
+            } else {
+                map.put(temp[0], temp[1]);
+            }
+        }
+
+        StringBuilder res11 = new StringBuilder();
+        for (Map.Entry<String, String> entry : map.entrySet()) {
+            res11.append(entry.getKey()).append(entry.getValue()).append(",");
+        }
+
+        // TODO 3NF是否需要把子集去掉?
+
         // res2 [AD]
         String res2 = getCandidateKey(strings, -1);
         res2 = res2.substring(1, res2.length() - 1);
+        String[] resArray = (res11 + res2).replaceAll(" ", "").split(",");
         if (flagStr == 1) {
-            return "\n分解为3NF模式集为：" +  (res1 + "," + res2).replaceAll(" ", "");
+            return getRes(strings, 0) + getCandidateKey(strings, 0) + "\n分解为3NF模式集为：" + Arrays.toString(resArray);
         } else {
-            return "\n" + (res1 + "," + res2).replaceAll(" ", "");
+            return "\n" + Arrays.toString(resArray);
         }
     }
 }
