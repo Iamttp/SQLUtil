@@ -1,3 +1,5 @@
+package MyUtil;
+
 import javax.swing.*;
 
 public class MyUtilEasy {

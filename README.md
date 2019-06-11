@@ -8,19 +8,19 @@
 
 `https://blog.csdn.net/Jaihk662/article/details/80081717`
 
-![avatar](src/2.PNG)
+![avatar](src/Picture/2.PNG)
 
-![avatar](src/3.PNG)
+![avatar](src/Picture/3.PNG)
 
-![avatar](src/4.PNG)
+![avatar](src/Picture/4.PNG)
 
 基本功能0.2(如下图 版本0.2完成 (1)):
 
-![avatar](src/1.PNG)
+![avatar](src/Picture/1.PNG)
 
 功能1.0（加入多张表，笛卡尔积 版本1.0完成 (1)(2)(3)）
 
-![avatar](src/5.PNG)
+![avatar](src/Picture/5.PNG)
 
 TODO 小问题：
 
@@ -36,7 +36,7 @@ TODO 待解决问题 ：
 
 完成了最小依赖集求解, 候选集
 
-![avatar](src/6.png)
+![avatar](src/Picture/6.png)
 
 正则表达式在线测试：
 `http://tool.oschina.net/regex/`

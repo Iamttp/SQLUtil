@@ -1,3 +1,5 @@
+import MyUIUtil.ToolbarButton;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -6,8 +8,8 @@ import java.awt.*;
  *
  * @author ttp
  */
-class QForm extends JFrame {
-    public QForm() {
+class MainForm extends JFrame {
+    public MainForm() {
         // ---------------------------------------------主窗口设置
         setTitle("数据库工具集");
         setSize(800, 300);
@@ -76,10 +78,8 @@ class QForm extends JFrame {
         cp.add(jpRes, BorderLayout.CENTER);
         setVisible(true);
     }
-}
 
-class Main {
     public static void main(String[] args) {
-        new QForm();
+        new MainForm();
     }
 }
