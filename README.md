@@ -1,5 +1,7 @@
 # SQL工具集
 
+源码网址: `https://github.com/Iamttp/SQLUtil`
+
 ### SQL QBE生成sql语句软件
 
 通过设置表格，自动生成SQL语句
@@ -96,3 +98,5 @@ TODO 待解决问题 ：
 > [ACE]
 > 
 > 分解为3NF模式集为：[AB, CD, ACE]
+
+![avatar](src/Picture/7.png)
