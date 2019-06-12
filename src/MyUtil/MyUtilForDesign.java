@@ -220,6 +220,7 @@ public class MyUtilForDesign {
      * 分解为3NF模式集
      */
     public static String get3NF(String[] strings, int flagStr) {
+        // -----------------------------------------------第一步: 求解最小依赖集,并合并左属性相同的FD
         // res1 AB->DE,B->DE,C->C
         String res1 = getRes(strings, -1);
         res1 = res1.substring(1, res1.length() - 1);
@@ -240,13 +241,31 @@ public class MyUtilForDesign {
         for (Map.Entry<String, String> entry : map.entrySet()) {
             res11.append(entry.getKey()).append(entry.getValue()).append(",");
         }
+        res1Array = (res11 + "").replaceAll(" ", "").split(",");
 
+        // -----------------------------------------------第二步: 求解候选键,并判断候选键是否存在于最小依赖集
         // TODO 3NF是否需要把子集去掉?
-
-        // res2 [AD]
         String res2 = getCandidateKey(strings, -1);
         res2 = res2.substring(1, res2.length() - 1);
-        String[] resArray = (res11 + res2).replaceAll(" ", "").split(",");
+        String[] res2Array = res2.replaceAll(" ", "").split(",");
+
+        for (String strNow : res2Array) {
+            // 对于每一个候选键,默认不包含
+            int flag = 0;
+            for (String bigStr : res1Array) {
+                if (containsDeep(bigStr, strNow)) {
+                    flag = 1;
+                }
+            }
+            if (flag == 0) {
+                res11.append(strNow).append(",");
+            }
+        }
+
+        // -----------------------------------------------第三步: 结果整理
+        String[] resArray = (res11 + "").replaceAll(" ", "").split(",");
+
+        // res2 [AD]
         if (flagStr == 1) {
             return getRes(strings, 0) + getCandidateKey(strings, 0) + "\n分解为3NF模式集为：" + Arrays.toString(resArray);
         } else {
