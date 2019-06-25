@@ -19,8 +19,14 @@ class NewForm2 extends JFrame {
         setSize(1000, 618);
 
         textArea.setFont(new Font("宋体", Font.BOLD, 30));
+        //分别设置水平和垂直滚动条自动出现
+        JScrollPane js = new JScrollPane(textArea);
+        js.setHorizontalScrollBarPolicy(
+                JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        js.setVerticalScrollBarPolicy(
+                JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         Container cp = getContentPane();
-        JSplitPane jSplitPane1 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, textArea, jToolBarRes);
+        JSplitPane jSplitPane1 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, js, jToolBarRes);
         JSplitPane jSplitPaneRes = new JSplitPane(JSplitPane.VERTICAL_SPLIT, new JLabel(
                 "<html><body><p align=\"center\">" +
                         "FD集的最小依赖集,候选键,3NF模式集。<br/>使用->代表箭头，使用,分割依赖（英文字符exp:A->B, A->BC, B->C）" +
