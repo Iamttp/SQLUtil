@@ -12,7 +12,7 @@ class MainForm extends JFrame {
     public MainForm() {
         // ---------------------------------------------主窗口设置
         setTitle("数据库工具集");
-        setSize(800, 300);
+        setSize(800, 420);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         // ----------------------------------------------暂时支持4张表
@@ -73,9 +73,19 @@ class MainForm extends JFrame {
             new NewForm2();
         }));
 
+        // ---------------------------------------------主窗口布局 for 内存型数据库
+        JSplitPane jp4 = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
+                new JLabel("快速SQL验证:点击下面的确认继续!") {{
+                    setFont(new Font("宋体", Font.BOLD, 30));
+                }}, new ToolbarButton("确定", 50, 50, e -> {
+//            setVisible(false);
+            new NewForm3();
+        }));
+
         Container cp = getContentPane();
         JSplitPane jpRes = new JSplitPane(JSplitPane.VERTICAL_SPLIT, jp2, jp3);
-        cp.add(jpRes, BorderLayout.CENTER);
+        JSplitPane jpRes2 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, jpRes, jp4);
+        cp.add(jpRes2, BorderLayout.CENTER);
         setVisible(true);
     }
 
