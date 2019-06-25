@@ -79,7 +79,11 @@ class MainForm extends JFrame {
                     setFont(new Font("宋体", Font.BOLD, 30));
                 }}, new ToolbarButton("确定", 50, 50, e -> {
 //            setVisible(false);
-            new NewForm3();
+            try {
+                new NewForm3();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }));
 
         Container cp = getContentPane();
