@@ -1,12 +1,8 @@
 package MyUtil;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
-import static MyUtil.MyUtilEasy.containsDeep;
-import static MyUtil.MyUtilEasy.getSubStr;
+import static MyUtil.MyUtilEasy.*;
 
 public class MyUtilForDesign {
     // 分割字符串
@@ -46,6 +42,7 @@ public class MyUtilForDesign {
      */
     public static String getResAdd(ArrayList<String> testArrayStr, String testStr) {
         String tempStr = testStr;
+        tempStr = getSort(tempStr);
         ArrayList<String[]> res = new ArrayList<>();
 
         // 一次do 循环即属性集扫描一次
@@ -55,19 +52,9 @@ public class MyUtilForDesign {
             temp[0] = tempStr;
             for (int i = 1; i < temp.length; i++) {
                 String[] strAll = testArrayStr.get(i - 1).split(SPLITABC);
-                if (tempStr.contains(strAll[0])) {
+                if (MyUtilEasy.containsDeep(tempStr, strAll[0])) {
                     tempStr += strAll[1];
-                    //1，把tempStr转换为字符数组
-                    char[] arrayCh = tempStr.toCharArray();
-                    //2，利用数组帮助类自动排序,！！主要是考虑包含关系
-                    Arrays.sort(arrayCh);
-                    //3.排序数组去重!!leetcode
-                    int length = MyUtilEasy.removeDuplicates(arrayCh);
-                    StringBuilder stringBuilder = new StringBuilder();
-                    for (int j = 0; j < length; j++) {
-                        stringBuilder.append(arrayCh[j]);
-                    }
-                    tempStr = stringBuilder.toString();
+                    tempStr = getSort(tempStr);
                 }
                 temp[i] = tempStr;
             }
@@ -82,6 +69,25 @@ public class MyUtilForDesign {
             ResForHelp.append(Arrays.toString(re)).append(" ");
         }
         return res.get(res.size() - 1)[testArrayStr.size()];
+    }
+
+    /**
+     * 第一步：FD写成右边为单属性.得到stringArrayList  exp: A->B, A->BC, B->C
+     */
+    private static ArrayList<String> getStrings(String[] strings) {
+        ArrayList<String> stringArrayList = new ArrayList<>();
+        for (String strNow : strings) {
+            String[] strNowSplit = strNow.split(SPLITABC);
+            for (int j = 0; j < strNowSplit[1].length(); j++) {
+                // 去重
+                if (!stringArrayList.contains(strNowSplit[0] + SPLITABC + strNowSplit[1].substring(j, j + 1))) {
+                    stringArrayList.add(
+                            strNowSplit[0] + SPLITABC + strNowSplit[1].substring(j, j + 1)
+                    );
+                }
+            }
+        }
+        return stringArrayList;
     }
 
     /**
@@ -120,10 +126,23 @@ public class MyUtilForDesign {
                 doGet.add(i);
             }
         }
-
         ArrayList<String> resRes = new ArrayList<>();
         for (Integer integer : doGet) {
             resRes.add(stringArrayList.get(integer));
+        }
+        // ------------------------------------------第三步， 针对A->C,AC->B的特殊情况进行判断
+        for (int i = 0; i < resRes.size(); i++) {
+            String nowStr = resRes.get(i).replaceAll("->", "");
+            String leftStr = resRes.get(i).split("->")[0];
+            for (int j = 0; j < resRes.size(); j++) {
+                if (j == i) {
+                    continue;
+                }
+                if (MyUtilEasy.containsDeep(resRes.get(j).split("->")[0], nowStr)) {
+                    String res = resRes.get(j).replaceAll(nowStr, leftStr);
+                    resRes.set(j, res);
+                }
+            }
         }
         if (flagStr == 1)
             return "\n单属性去重为：" + stringArrayList + ResForHelp + "\n最小依赖集最终结果：\n" + resRes.toString();
@@ -131,25 +150,6 @@ public class MyUtilForDesign {
             return "\n最小依赖集最终结果：\n" + resRes.toString();
         else
             return resRes.toString();
-    }
-
-    /**
-     * 第一步：FD写成右边为单属性.得到stringArrayList  exp: A->B, A->BC, B->C
-     */
-    private static ArrayList<String> getStrings(String[] strings) {
-        ArrayList<String> stringArrayList = new ArrayList<>();
-        for (String strNow : strings) {
-            String[] strNowSplit = strNow.split(SPLITABC);
-            for (int j = 0; j < strNowSplit[1].length(); j++) {
-                // 去重
-                if (!stringArrayList.contains(strNowSplit[0] + SPLITABC + strNowSplit[1].substring(j, j + 1))) {
-                    stringArrayList.add(
-                            strNowSplit[0] + SPLITABC + strNowSplit[1].substring(j, j + 1)
-                    );
-                }
-            }
-        }
-        return stringArrayList;
     }
 
     /**
@@ -175,7 +175,6 @@ public class MyUtilForDesign {
         for (int j = 0; j < length; j++) {
             stringBuilder.append(arrayCh[j]);
         }
-
         // 假如arrayCh为A,B,C,D，那么ACD的下标即为1011(二进制),
 //        ArrayList<Boolean> integerArrayList = new ArrayList<>(); TODO 优化
         for (int i = 1; i < Math.pow(2, length); i++) {

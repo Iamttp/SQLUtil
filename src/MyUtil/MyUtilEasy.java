@@ -1,6 +1,7 @@
 package MyUtil;
 
 import javax.swing.*;
+import java.util.Arrays;
 
 public class MyUtilEasy {
 
@@ -44,5 +45,20 @@ public class MyUtilEasy {
 
     public static void message(String cellValue) {
         JOptionPane.showMessageDialog(null, cellValue, "", JOptionPane.PLAIN_MESSAGE);
+    }
+
+    /* 对字母统一排序*/
+    public static String getSort(String str) {
+        //1，把tempStr转换为字符数组
+        char[] arrayCh = str.toCharArray();
+        //2，利用数组帮助类自动排序,！！主要是考虑包含关系
+        Arrays.sort(arrayCh);
+        //3.排序数组去重!!leetcode
+        int length = MyUtilEasy.removeDuplicates(arrayCh);
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int j = 0; j < length; j++) {
+            stringBuilder.append(arrayCh[j]);
+        }
+        return stringBuilder.toString();
     }
 }
