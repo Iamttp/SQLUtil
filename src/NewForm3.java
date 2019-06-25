@@ -73,7 +73,8 @@ public class NewForm3 extends JFrame {
         jToolBarRes.butRes1.addActionListener(e -> {
             System.out.println("第二步 执行创建表语句");
             StringBuilder sql = new StringBuilder();
-            sql.append("CREATE TABLE myTable (\n");
+            // 表名为t
+            sql.append("CREATE TABLE t (\n");
             for (int i = 0; i < table.getColumnCount(); i++) {
                 if (i == 0) {
                     sql.append(((String) table.getValueAt(0, i)));
@@ -87,7 +88,7 @@ public class NewForm3 extends JFrame {
             sql.append(");\n");
             try {
                 textArea.append(sql.toString());
-                ResultSet rs = st.executeQuery(sql.toString());
+                st.executeUpdate(sql.toString());
             } catch (SQLException ex) {
                 textArea.append("SQL语句出错\n");
                 ex.printStackTrace();
@@ -106,21 +107,25 @@ public class NewForm3 extends JFrame {
         });
 
         jToolBarRes.butRes2.addActionListener(e -> {
-            // TODO 1 重新读取表格数据， 并清空表格然后插入
-            // TODO 2 执行输入框的SQL数据
-            // TODO 3 根据返回结果，更新下面的表格
+            // TODO 1 重新读取表格数据， 并清空数据库的表然后插入 相当于将UPDATE DELETE 语句用可视化方式结合起来
+            StringBuilder rows = new StringBuilder();
+            for (int i = 0; i < table.getColumnCount(); i++) {
+                String nowStr = (String) table.getValueAt(0, i);
+                rows.append(nowStr).append(",");
+            }
+
+            // TODO 2 执行输入框的SQL数据   一般用SELECT 方便测试SQL语句
             try {
                 ResultSet rs = st.executeQuery(textArea.getText());
                 while (rs.next()) {
-//                    int id = rs.getInt("id");
-//                    String name = rs.getString("name");
-//                    System.out.println(id + "****" + name);
-                    // TODO
+                    String name = rs.getString(1);
+                    System.out.println(name);
                 }
             } catch (SQLException ex) {
                 textArea.append("SQL语句出错\n");
                 ex.printStackTrace();
             }
+            // TODO 3 根据返回结果，更新下面的表格
         });
     }
 }

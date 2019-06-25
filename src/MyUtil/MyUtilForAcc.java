@@ -1,5 +1,7 @@
 package MyUtil;
 
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -53,6 +55,14 @@ public class MyUtilForAcc {
             }
         }
         return ls;
+    }
+
+    // 第一步
+    public static void insertValue(Statement st, String tableName, String val) throws SQLException {
+        StringBuilder sql1 = new StringBuilder();
+        sql1.append("INSERT INTO ").append(tableName).append("\n VALUES(");
+        sql1.append(val).append(");");
+        st.executeQuery(sql1.toString());
     }
 
     public static void main(String[] arg) {
