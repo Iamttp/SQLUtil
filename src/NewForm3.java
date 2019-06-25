@@ -1,16 +1,15 @@
 import MyUIUtil.textAreaRes3;
+import MyUtil.MyUtilForAcc;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import java.awt.*;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
+import java.util.List;
 
 public class NewForm3 extends JFrame {
-    private textAreaRes3 jToolBarRes = new textAreaRes3("随机数据生成", "执行SQL");
+    private textAreaRes3 jToolBarRes = new textAreaRes3("创建表并生成随机数据", "修改下方文本框执行SQL");
     private JTextArea textArea = new JTextArea();
     private Object[][] obj = {{" "}, {" "}, {" "}, {" "}, {" "}};
     private String[] columnNames = {"col1", "col2", "col3", "col4"};
@@ -18,15 +17,10 @@ public class NewForm3 extends JFrame {
     public JTable tableRes = new JTable();
 
     NewForm3() throws Exception {
-        System.out.println("第一步 连接");
-        Class.forName("org.hsqldb.jdbcDriver");
-        String url = "jdbc:hsqldb:mem:ttpDB";
-        Connection c = DriverManager.getConnection(url);
-        Statement st = c.createStatement();
         // ---------------------------------------------主窗口设置
         setTitle("SQL快速验证工具");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setSize(800, 618);
+        setSize(1200, 618);
 
         // ----------------------------------------------table设置
         table.setModel(new DefaultTableModel(obj, columnNames));
@@ -34,9 +28,9 @@ public class NewForm3 extends JFrame {
         table.setFont(new Font("宋体", Font.BOLD, 30));
         for (int i = 0; i < columnNames.length; i++) {
             TableColumn firsetColumn = table.getColumnModel().getColumn(i);
-            firsetColumn.setPreferredWidth(100);
-            firsetColumn.setMaxWidth(100);
-            firsetColumn.setMinWidth(100);
+            firsetColumn.setPreferredWidth(200);
+            firsetColumn.setMaxWidth(200);
+            firsetColumn.setMinWidth(200);
         }
         table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 
@@ -45,9 +39,9 @@ public class NewForm3 extends JFrame {
         tableRes.setFont(new Font("宋体", Font.BOLD, 30));
         for (int i = 0; i < columnNames.length; i++) {
             TableColumn firsetColumn = tableRes.getColumnModel().getColumn(i);
-            firsetColumn.setPreferredWidth(100);
-            firsetColumn.setMaxWidth(100);
-            firsetColumn.setMinWidth(100);
+            firsetColumn.setPreferredWidth(200);
+            firsetColumn.setMaxWidth(200);
+            firsetColumn.setMinWidth(200);
         }
         tableRes.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 
@@ -65,22 +59,68 @@ public class NewForm3 extends JFrame {
         jSplitPane2.setResizeWeight(0.5);
         jSplitPaneRes.setResizeWeight(0.9);
         cp.add(jSplitPaneRes, BorderLayout.CENTER);
-
-        // TODO 按钮监听
+        setAddition();
         setVisible(true);
     }
 
-    public static void fun(String[] args) {
-//        System.out.println("第二步 执行查询语句");
-//        ResultSet rs = st.executeQuery("select * from category");
-//        while (rs.next()) {
-//            int id = rs.getInt("id");
-//            String name = rs.getString("name");
-//            System.out.println(id + "****" + name);
-//        }
-        //TODO 没有关闭连接
-//        System.out.println("第三步 关闭连接");
-//        st.close();
-//        c.close();
+    void setAddition() throws ClassNotFoundException, SQLException {
+        System.out.println("第一步 连接");
+        Class.forName("org.hsqldb.jdbcDriver");
+        String url = "jdbc:hsqldb:mem:ttpDB";
+        Connection c = DriverManager.getConnection(url);
+        Statement st = c.createStatement();
+
+        jToolBarRes.butRes1.addActionListener(e -> {
+            System.out.println("第二步 执行创建表语句");
+            StringBuilder sql = new StringBuilder();
+            sql.append("CREATE TABLE myTable (\n");
+            for (int i = 0; i < table.getColumnCount(); i++) {
+                if (i == 0) {
+                    sql.append(((String) table.getValueAt(0, i)));
+                    continue;
+                }
+                if (null == table.getValueAt(0, i)) {
+                    continue;
+                }
+                sql.append(",").append(((String) table.getValueAt(0, i)));
+            }
+            sql.append(");\n");
+            try {
+                textArea.append(sql.toString());
+                ResultSet rs = st.executeQuery(sql.toString());
+            } catch (SQLException ex) {
+                textArea.append("SQL语句出错\n");
+                ex.printStackTrace();
+            }
+            System.out.println("第三步 生成随机数据");
+            for (int i = 0; i < table.getColumnCount(); i++) {
+                String nowStr = (String) table.getValueAt(0, i);
+                if (nowStr != null) {
+                    nowStr = nowStr.trim();
+                }
+                List<String> res = MyUtilForAcc.getRandom(nowStr.split(" ")[1], 5);
+                for (int j = 1; j < res.size(); j++) {
+                    table.setValueAt(res.get(j), j, i);
+                }
+            }
+        });
+
+        jToolBarRes.butRes2.addActionListener(e -> {
+            // TODO 1 重新读取表格数据， 并清空表格然后插入
+            // TODO 2 执行输入框的SQL数据
+            // TODO 3 根据返回结果，更新下面的表格
+            try {
+                ResultSet rs = st.executeQuery(textArea.getText());
+                while (rs.next()) {
+//                    int id = rs.getInt("id");
+//                    String name = rs.getString("name");
+//                    System.out.println(id + "****" + name);
+                    // TODO
+                }
+            } catch (SQLException ex) {
+                textArea.append("SQL语句出错\n");
+                ex.printStackTrace();
+            }
+        });
     }
 }
