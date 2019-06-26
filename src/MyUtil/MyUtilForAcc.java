@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import static MyUtil.MyUtilEasy.addStr;
+
 public class MyUtilForAcc {
     private static final List<String> DATATYPE = new ArrayList<String>() {{
         add("CHAR");
@@ -57,24 +59,19 @@ public class MyUtilForAcc {
         return ls;
     }
 
-    // 第一步 tableName处理多余
     public static String insertValue(Statement st, String tableName, String val) throws SQLException {
-        String[] s = tableName.split(",");
+        String[] s = val.split(",");
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < s.length; i++) {
             if (i != 0)
-                sb.append(",").append(s[i].split(" ")[0]);
+                sb.append(",").append(addStr(s[i].split(" ")[0]));
             else
-                sb.append(s[i].split(" ")[0]);
+                sb.append(addStr(s[i].split(" ")[0]));
         }
         StringBuilder sql1 = new StringBuilder();
-        sql1.append("INSERT INTO ").append(sb.toString()).append("\n VALUES(");
-        sql1.append(val).append(");").append("\n");
+        sql1.append("INSERT INTO ").append(tableName).append("\n VALUES(");
+        sql1.append(sb.toString()).append(");").append("\n");
         st.execute(sql1.toString());
         return sql1.toString();
-    }
-
-    public static void main(String[] arg) {
-        System.out.println(getRandom("INT", 5));
     }
 }

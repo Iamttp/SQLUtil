@@ -134,13 +134,19 @@ public class NewForm3 extends JFrame {
                 MyUtilEasy.message("输入框为空！");
                 return;
             }
+            // 清空数据库的表重新插入， 清空表
             try {
                 st.execute("delete from t");
                 textAreaOut.append("delete from t\n");
             } catch (SQLException ex) {
                 System.out.print("第一次drop");
             }
-            // 1 重新读取表格数据， 并清空数据库的表然后插入 相当于将UPDATE DELETE 语句用可视化方式结合起来
+            for (int j = 0; j < tableRes.getColumnCount(); j++) {
+                for (int i = 0; i < tableRes.getRowCount(); i++) {
+                    tableRes.setValueAt("", i, j);
+                }
+            }
+            // 1 重新读取表格数据， 然后插入 相当于将UPDATE DELETE 语句用可视化方式结合起来
             ArrayList<String> as = new ArrayList<>();
             for (int j = 0; j < 5; j++) {
                 StringBuilder rows = new StringBuilder();

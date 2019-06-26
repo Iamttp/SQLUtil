@@ -74,4 +74,14 @@ public class MyUtilEasy {
         }
         return sb.toString();
     }
+
+    public static String addStr(String str) {
+        String str1 = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        for (int i = 0; i < str1.length(); i++) {
+            if (str.indexOf(str1.charAt(i)) != -1) {
+                return "\'" + str + "\'";
+            }
+        }
+        return str;
+    }
 }
