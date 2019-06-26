@@ -183,12 +183,12 @@ public class NewForm3 extends JFrame {
                 // 获得结果集结构信息,元数据
                 ResultSetMetaData md = rs.getMetaData();
                 // 获得列数
-                for (int i = 1; i <= realCol; i++) {
+                for (int i = 1; i <= md.getColumnCount(); i++) {
                     tableRes.setValueAt(md.getColumnLabel(i), 0, i - 1);
                 }
                 while (rs.next()) {
                     j++;
-                    for (int i = 1; i <= realCol; i++) {
+                    for (int i = 1; i <= md.getColumnCount(); i++) {
                         String name = rs.getString(i);
                         tableRes.setValueAt(name, j, i - 1);
                     }
