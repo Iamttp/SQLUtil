@@ -95,6 +95,7 @@ public class NewForm3 extends JFrame {
             StringBuilder sql = new StringBuilder();
             // 表名为t
             sql.append("CREATE TABLE t (\n");
+            realCol = 0;
             for (int i = 0; i < table.getColumnCount(); i++) {
                 if (i == 0) {
                     sql.append(((String) table.getValueAt(0, i))).append("\n");
@@ -113,6 +114,7 @@ public class NewForm3 extends JFrame {
                 st.executeUpdate(sql.toString());
             } catch (SQLException ex) {
                 textAreaOut.append("SQL语句出错\n");
+                MyUtilEasy.message(ex.toString());
                 ex.printStackTrace();
             }
             System.out.println("第三步 生成随机数据");
@@ -168,6 +170,8 @@ public class NewForm3 extends JFrame {
                 try {
                     textAreaOut.append(insertValue(st, "t", as.get(i)));
                 } catch (SQLException ex) {
+                    textAreaOut.append("SQL语句出错\n");
+                    MyUtilEasy.message(ex.toString());
                     ex.printStackTrace();
                 }
             }
@@ -180,7 +184,7 @@ public class NewForm3 extends JFrame {
                 ResultSetMetaData md = rs.getMetaData();
                 // 获得列数
                 for (int i = 1; i <= realCol; i++) {
-                    tableRes.setValueAt(md.getColumnLabel(i), j, i - 1);
+                    tableRes.setValueAt(md.getColumnLabel(i), 0, i - 1);
                 }
                 while (rs.next()) {
                     j++;
@@ -191,6 +195,7 @@ public class NewForm3 extends JFrame {
                 }
             } catch (SQLException ex) {
                 textAreaOut.append("SQL语句出错\n");
+                MyUtilEasy.message(ex.toString());
                 ex.printStackTrace();
             }
         });
