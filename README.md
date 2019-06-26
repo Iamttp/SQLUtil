@@ -100,6 +100,7 @@ TODO 待解决问题 ：
 > 分解为3NF模式集为：[AB, CD, ACE]
 
 ![avatar](src/Picture/7.png)
+![avatar](src/Picture/11.png)
 
 ### SQL 快速测试SQL工具
 
