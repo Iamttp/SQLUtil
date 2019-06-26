@@ -171,7 +171,7 @@ public class NewForm3 extends JFrame {
                     ex.printStackTrace();
                 }
             }
-            // 2 执行输入框的SQL数据   一般用SELECT 方便测试SQL语句 TODO 字符数据加引号
+            // 2 执行输入框的SQL数据   一般用SELECT 方便测试SQL语句字符数据加引号
             try {
                 ResultSet rs = st.executeQuery(textAreaIn.getText());
                 // 3 根据返回结果，更新下面的表格
