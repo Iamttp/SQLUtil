@@ -1,4 +1,5 @@
 import MyUIUtil.textAreaRes3;
+import MyUtil.MyUtilEasy;
 import MyUtil.MyUtilForAcc;
 
 import javax.swing.*;
@@ -129,6 +130,16 @@ public class NewForm3 extends JFrame {
         });
 
         jToolBarRes.butRes2.addActionListener(e -> {
+            if ((textAreaIn == null) || ("".equals(textAreaIn.getText()))) {
+                MyUtilEasy.message("输入框为空！");
+                return;
+            }
+            try {
+                st.execute("delete from t");
+                textAreaOut.append("delete from t\n");
+            } catch (SQLException ex) {
+                System.out.print("第一次drop");
+            }
             // 1 重新读取表格数据， 并清空数据库的表然后插入 相当于将UPDATE DELETE 语句用可视化方式结合起来
             ArrayList<String> as = new ArrayList<>();
             for (int j = 0; j < 5; j++) {
@@ -154,14 +165,17 @@ public class NewForm3 extends JFrame {
                     ex.printStackTrace();
                 }
             }
-            // 2 执行输入框的SQL数据   一般用SELECT 方便测试SQL语句
-            if ((textAreaIn == null) || ("".equals(textAreaIn.getText()))) {
-                return;
-            }
+            // 2 执行输入框的SQL数据   一般用SELECT 方便测试SQL语句 TODO 字符数据加引号
             try {
                 ResultSet rs = st.executeQuery(textAreaIn.getText());
-                // TODO 3 根据返回结果，更新下面的表格
+                // 3 根据返回结果，更新下面的表格
                 int j = 0;
+                // 获得结果集结构信息,元数据
+                ResultSetMetaData md = rs.getMetaData();
+                // 获得列数
+                for (int i = 1; i <= realCol; i++) {
+                    tableRes.setValueAt(md.getColumnLabel(i), j, i - 1);
+                }
                 while (rs.next()) {
                     j++;
                     for (int i = 1; i <= realCol; i++) {
@@ -173,7 +187,6 @@ public class NewForm3 extends JFrame {
                 textAreaOut.append("SQL语句出错\n");
                 ex.printStackTrace();
             }
-
         });
 
         this.addWindowListener(new WindowAdapter() {
