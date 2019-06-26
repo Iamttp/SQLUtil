@@ -57,12 +57,21 @@ public class MyUtilForAcc {
         return ls;
     }
 
-    // 第一步
-    public static void insertValue(Statement st, String tableName, String val) throws SQLException {
+    // 第一步 tableName处理多余
+    public static String insertValue(Statement st, String tableName, String val) throws SQLException {
+        String[] s = tableName.split(",");
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < s.length; i++) {
+            if (i != 0)
+                sb.append(",").append(s[i].split(" ")[0]);
+            else
+                sb.append(s[i].split(" ")[0]);
+        }
         StringBuilder sql1 = new StringBuilder();
-        sql1.append("INSERT INTO ").append(tableName).append("\n VALUES(");
-        sql1.append(val).append(");");
-        st.executeQuery(sql1.toString());
+        sql1.append("INSERT INTO ").append(sb.toString()).append("\n VALUES(");
+        sql1.append(val).append(");").append("\n");
+        st.execute(sql1.toString());
+        return sql1.toString();
     }
 
     public static void main(String[] arg) {

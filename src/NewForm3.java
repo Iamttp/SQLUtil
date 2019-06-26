@@ -6,12 +6,16 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
+
+import static MyUtil.MyUtilForAcc.insertValue;
 
 public class NewForm3 extends JFrame {
     private textAreaRes3 jToolBarRes = new textAreaRes3("创建表并生成随机数据", "修改下方文本框执行SQL");
-    private JTextArea textArea = new JTextArea();
-    private Object[][] obj = {{" "}, {" "}, {" "}, {" "}, {" "}};
+    private JTextArea textAreaIn = new JTextArea();
+    private JTextArea textAreaOut = new JTextArea();
+    private Object[][] obj = {{""}, {""}, {""}, {""}, {""}};
     private String[] columnNames = {"col1", "col2", "col3", "col4"};
     public JTable table = new JTable();
     public JTable tableRes = new JTable();
@@ -45,16 +49,22 @@ public class NewForm3 extends JFrame {
         }
         tableRes.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 
-        textArea.setFont(new Font("宋体", Font.BOLD, 30));
-        JScrollPane js = new JScrollPane(textArea);
+        textAreaOut.setFont(new Font("宋体", Font.BOLD, 30));
+        JScrollPane js = new JScrollPane(textAreaOut);
         js.setHorizontalScrollBarPolicy(
                 JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         js.setVerticalScrollBarPolicy(
                 JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        JScrollPane js2 = new JScrollPane(textAreaIn);
+        js2.setHorizontalScrollBarPolicy(
+                JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        js2.setVerticalScrollBarPolicy(
+                JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         Container cp = getContentPane();
-        JSplitPane jSplitPane1 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, jToolBarRes, js);
-        JSplitPane jSplitPane2 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, table, tableRes);
-        JSplitPane jSplitPaneRes = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, jSplitPane2, jSplitPane1);
+        JSplitPane jSplitPane1 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, jToolBarRes, js2);
+        JSplitPane jSplitPane2 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, jSplitPane1, js);
+        JSplitPane jSplitPane3 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, table, tableRes);
+        JSplitPane jSplitPaneRes = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, jSplitPane3, jSplitPane2);
         jSplitPane1.setResizeWeight(0.1);
         jSplitPane2.setResizeWeight(0.5);
         jSplitPaneRes.setResizeWeight(0.9);
@@ -77,28 +87,29 @@ public class NewForm3 extends JFrame {
             sql.append("CREATE TABLE t (\n");
             for (int i = 0; i < table.getColumnCount(); i++) {
                 if (i == 0) {
-                    sql.append(((String) table.getValueAt(0, i)));
+                    sql.append(((String) table.getValueAt(0, i))).append("\n");
                     continue;
                 }
                 if (null == table.getValueAt(0, i)) {
                     continue;
                 }
-                sql.append(",").append(((String) table.getValueAt(0, i)));
+                sql.append(",").append(((String) table.getValueAt(0, i))).append("\n");
             }
             sql.append(");\n");
             try {
-                textArea.append(sql.toString());
+                textAreaOut.append(sql.toString());
                 st.executeUpdate(sql.toString());
             } catch (SQLException ex) {
-                textArea.append("SQL语句出错\n");
+                textAreaOut.append("SQL语句出错\n");
                 ex.printStackTrace();
             }
             System.out.println("第三步 生成随机数据");
             for (int i = 0; i < table.getColumnCount(); i++) {
                 String nowStr = (String) table.getValueAt(0, i);
-                if (nowStr != null) {
-                    nowStr = nowStr.trim();
+                if (nowStr == null) {
+                    continue;
                 }
+                nowStr = nowStr.trim();
                 List<String> res = MyUtilForAcc.getRandom(nowStr.split(" ")[1], 5);
                 for (int j = 1; j < res.size(); j++) {
                     table.setValueAt(res.get(j), j, i);
@@ -107,22 +118,43 @@ public class NewForm3 extends JFrame {
         });
 
         jToolBarRes.butRes2.addActionListener(e -> {
-            // TODO 1 重新读取表格数据， 并清空数据库的表然后插入 相当于将UPDATE DELETE 语句用可视化方式结合起来
-            StringBuilder rows = new StringBuilder();
-            for (int i = 0; i < table.getColumnCount(); i++) {
-                String nowStr = (String) table.getValueAt(0, i);
-                rows.append(nowStr).append(",");
+            // 1 重新读取表格数据， 并清空数据库的表然后插入 相当于将UPDATE DELETE 语句用可视化方式结合起来
+            ArrayList<String> as = new ArrayList<>();
+            for (int j = 0; j < 5; j++) {
+                StringBuilder rows = new StringBuilder();
+                for (int i = 0; i < table.getColumnCount(); i++) {
+                    String nowStr = (String) table.getValueAt(j, i);
+                    if (nowStr == null) {
+                        continue;
+                    }
+                    nowStr = nowStr.trim();
+                    if (i != 0)
+                        rows.append(",").append(nowStr);
+                    else
+                        rows.append(nowStr);
+                }
+                as.add(rows.toString());
             }
 
+            for (int i = 1; i < as.size(); i++) {
+                try {
+                    textAreaOut.append(insertValue(st, "t", as.get(i)));
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
             // TODO 2 执行输入框的SQL数据   一般用SELECT 方便测试SQL语句
+            if ((textAreaIn == null) || ("".equals(textAreaIn.getText()))) {
+                return;
+            }
             try {
-                ResultSet rs = st.executeQuery(textArea.getText());
+                ResultSet rs = st.executeQuery(textAreaOut.getText());
                 while (rs.next()) {
                     String name = rs.getString(1);
                     System.out.println(name);
                 }
             } catch (SQLException ex) {
-                textArea.append("SQL语句出错\n");
+                textAreaOut.append("SQL语句出错\n");
                 ex.printStackTrace();
             }
             // TODO 3 根据返回结果，更新下面的表格

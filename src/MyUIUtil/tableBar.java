@@ -9,7 +9,7 @@ import java.awt.*;
  * 自定义表格（加两个按钮）
  */
 public class tableBar extends JToolBar {
-    private Object[][] obj = {{" "}, {" "}};
+    private Object[][] obj = {{""}, {""}};
     private String[] columnNames = {"col1", "col2", "col3", "col4"};
     private final int heigth = 200;
     public JTable table = new JTable();
