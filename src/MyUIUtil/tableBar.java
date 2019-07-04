@@ -11,7 +11,7 @@ import java.awt.*;
 public class tableBar extends JToolBar {
     private Object[][] obj = {{""}, {""}};
     private String[] columnNames = {"col1", "col2", "col3", "col4"};
-    private final int heigth = 200;
+    private static final int heigth = 200;
     public JTable table = new JTable();
 
     public tableBar() {

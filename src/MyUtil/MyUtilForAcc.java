@@ -71,6 +71,7 @@ public class MyUtilForAcc {
         StringBuilder sql1 = new StringBuilder();
         sql1.append("INSERT INTO ").append(tableName).append("\n VALUES(");
         sql1.append(sb.toString()).append(");").append("\n");
+        // FindBugs你真牛，该方法以字符串的形式来调用SQLstatement的execute方法，它似乎是动态生成SQL语句的方法。这会更容易受到SQL注入攻击。
         st.execute(sql1.toString());
         return sql1.toString();
     }
